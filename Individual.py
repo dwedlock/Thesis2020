@@ -18,17 +18,18 @@ class Individual:
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):
-        print self.indnum
-        print self.xpos
-        print self.ypos
-        print self.zpos
-        print self.vmax
+        print "Turn this on for all stats print"
+        #print self.indnum
+        #print self.xpos
+        #print self.ypos
+        #print self.zpos
+        #print self.vmax
 
     def generate_wp(self):
         loop = 0
         print "num points ",self.num_points
         for i in range(0,self.num_points):
-            print "Loop",loop
+            #print "Loop",loop
             loop = loop + 1
             self.waypoints.append(self.xpos[i])
             self.waypoints.append(self.ypos[i])
