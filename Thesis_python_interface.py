@@ -181,6 +181,8 @@ class MoveGroupPythonIntefaceTutorial(object):
     move_group.set_goal_tolerance(0.5)
     move_group.set_goal_joint_tolerance(0.5)
     move_group.set_max_velocity_scaling_factor(0.5)
+    move_group.set_start_state_to_current_state()
+
     vel = []
 
 

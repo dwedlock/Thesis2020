@@ -146,6 +146,7 @@ def grabGenertics(remain_ind):
             print "Out of points"
         
         print "New Version Ind"
+        print "Number Points",numpoints[0],num_points[1]
         print new_xmin#.append(xold[0]) # list if 10ish min max
         print new_xmax#.append(xold[-1]) # list if 10ish min max
         print new_ymin#.append(yold[0]) # list if 10ish min max
