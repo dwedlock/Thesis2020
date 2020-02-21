@@ -1,11 +1,57 @@
 import time
 #import Individual
 from copy import deepcopy
+from itertools import izip
+import csv
+from scipy.spatial import distance
 
 def print_all(all_ind): # passed population
 
     for individuals in all_ind.indinstances:
         print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid
+
+def calc_euclid(individual):
+    file_str = "Results/Sim/ind%sgen%s.csv" % ((individual.indnum), (individual.gen))
+    print "file String looks like",file_str
+    #currently zeros, will be real data 
+    other_file_str = "Results/Real/allZero.csv" 
+    print "Opening file to evaluate",file_str
+
+
+    with open(file_str,'rb') as textfile1, open(other_file_str,'rb') as textfile2: 
+        csvreader1=csv.reader(textfile1,delimiter=',') # Careful to check csv type file 
+        csvreader2=csv.reader(textfile2,delimiter=',')
+        print "list Method"
+        # Simulation data 
+        xyz = list(izip(*csvreader1))
+        valsX = xyz[0] # Zero all X 
+        valsY = xyz[1] # Zero all X 
+        valsZ = xyz[2] # Zero all X 
+        #Will be real data currently zeros
+        zero = list(izip(*csvreader2))
+        compX = zero[0] # careful to change later 
+        compY = zero[0]
+        compZ = zero[0]
+
+        for i in range(len(valsX)):
+            #print(colors[i])
+            #print "NUmbers look like"
+            #print valsX[i]
+            #print valsY[i]
+            #print valsZ[i]
+            x = float(valsX[i])
+            y = float(valsY[i])
+            z = float(valsZ[i])
+            p1 = (x,y,z)#(float(valsZ[i])))
+            p2 = (0.0,0.0,0.0)
+            #print p2
+            individual.euclid = individual.euclid + distance.euclidean(p1,p2)
+        print "Euclidean Composite from 0,0,0 to every point at 10hz recording frequency", individual.euclid
+
+
+
+
+
 
 def evaluate_ind(all_ind): # recall the whole pop
     # ENTRY POINT OF GA
@@ -13,11 +59,14 @@ def evaluate_ind(all_ind): # recall the whole pop
     loop = 0
     ## Decision Point
     # Keep Best 5? 
+    #Generate the actual Eucideans from two excell spreadsheets
+    for individuals in all_ind.indinstances:
+        calc_euclid(individuals)
     # sorts best to worst Euclidean 
     all_ind.indinstances.sort(key=lambda x: x.euclid,reverse=False)
 
 
-    for i in range(0,5):# kill bottom 5 NOTE must be less than pop number of crash
+    for i in range(0,10):# kill bottom 5 NOTE must be less than pop number of crash
         print "popping an ind"
         topop = all_ind.indinstances[i]
         topop.alive = False # this way the historical population can still be sorted for alive True/False 
@@ -33,7 +82,7 @@ def evaluate_ind(all_ind): # recall the whole pop
     #Clear the current individuals
     #    all_ind.indinstances = []
 def grabGenertics(remain_ind):
-    newnum = 5 # this is how many new individuals to generate
+    newnum = 20 # this is how many new individuals to generate
     numpoints = []
     sortnumpoints = [] # list if two min max
 

@@ -53,33 +53,35 @@ def main():
     
 
     print "Generating a population"
-    pop = Population(20)
+    pop = Population(10)
     #Generate an initial population of 20
     pop.generate_inds(pop.numberinds,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax)
     pop.gen_wp()
     loops = 0
     
     while (1):
-
+        loops = loops + 1
         # SIMULATOR LOOP IND are updated with a Euclid distance 
         for individuals in pop.indinstances:
+            individuals.gen = loops
+            
           #print "New Path entered and Model Pos" 
           #print model_info_prox    
             #print "Can I Home? waiting on Raw Input"
             #raw_input()
           #print "Should be at home position"
           #tutorial.go_to_joint_state(0.1,-1.57,0.1,0.1,0.1,0.1) 
-          rospy.sleep(2)
-          if individuals.evaluated == False: # this line ensures we only do the new ones 
-            pathlist = individuals.waypoints#[0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
+            rospy.sleep(2)
+            if individuals.evaluated == False: # this line ensures we only do the new ones 
+                pathlist = individuals.waypoints#[0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
             #cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,odom)
 
-            evaluate_test(individuals)
+                evaluate_test(individuals)
 
 
-            individuals.evaluated = True
-          else:
-            print "This individual", individuals.indnum," with euclid",individuals.euclid," was already assessed... skipping to next"
+                individuals.evaluated = True
+            else:
+                print "This individual", individuals.indnum," with euclid",individuals.euclid," was already assessed... skipping to next"
 
 
         print "Evaluation Cycle"

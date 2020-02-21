@@ -15,6 +15,7 @@ class Individual:
         self.num_points = number_points
         self.waypoints = []
         self.euclid = 50000 # super large number to begin with
+        self.gen = 0
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):

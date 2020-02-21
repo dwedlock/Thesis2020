@@ -18,6 +18,7 @@ from moveit_commander.conversions import pose_to_list
 from gazebo_msgs.srv import GetModelState, GetModelStateRequest, GetLinkState
 from gazebo_msgs.msg import LinkState
 from multiprocessing import Process
+import os
 # from compas.datastructures import Mesh
 # import compas_fab
 # from compas_fab.backends import RosClient
@@ -179,6 +180,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     move_group.set_goal_orientation_tolerance(0.5)
     move_group.set_goal_tolerance(0.5)
     move_group.set_goal_joint_tolerance(0.5)
+    move_group.set_max_velocity_scaling_factor(0.5)
     vel = []
 
 
@@ -245,9 +247,20 @@ class MoveGroupPythonIntefaceTutorial(object):
     time.sleep(2) # give other process time to start
     inst_str = "start"
     
+    duration = 5  # seconds
+    freq = 440  # Hz
+
     writer.publish(inst_str)
     time.sleep(.1)# this sleep ensures we pick it up
-    move_group.execute(plan, wait=True)
+    if plan != -1:
+      move_group.execute(plan, wait=True)
+    if plan == -1:
+      print "Plan failure -1 returned, this was a bad plan"
+      os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
+      
+      frequency = 2500  # Set Frequency To 2500 Hertz
+      duration = 1000  # Set Duration To 1000 ms == 1 second
+      winsound.Beep(frequency, duration)
     inst_str = "stop"
     writer.publish(inst_str)
     #linked = move_group.get_current_pose
