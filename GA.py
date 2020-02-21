@@ -8,12 +8,14 @@ def print_all(all_ind): # passed population
         print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid
 
 def evaluate_ind(all_ind): # recall the whole pop
-
+    # ENTRY POINT OF GA
     worst = 5
     loop = 0
     ## Decision Point
     # Keep Best 5? 
     all_ind.indinstances.sort(key=lambda x: x.euclid,reverse=False)
+
+
     for i in range(0,5):# kill bottom 5 NOTE must be less than pop number of crash
         print "popping an ind"
         topop = all_ind.indinstances[i]

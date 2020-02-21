@@ -156,7 +156,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     return all_close(pose_goal, current_pose, 0.01)
 
 
-  def plan_cartesian_path(self,coords,ind,odom,scale=1):
+  def plan_cartesian_path(self,coords,ind,writer,scale=1):
     #Can access the individual that we are acting upon below
     #ind.printIndnum()
     print "Im in Planning"
@@ -232,24 +232,28 @@ class MoveGroupPythonIntefaceTutorial(object):
     #print "Start Execute"
     #move_group = self.move_group
     #print odom.is_alive()
-    if(odom.is_alive() == False):
+    #if(odom.is_alive() == False):
       #print "here"
-      odom.start()
+    #  odom.start()
       #time.sleep(1)
     #time.sleep(1)
     #print odom.is_alive()
-    if(odom.is_alive() == True):
+    #if(odom.is_alive() == True):
       #print "I started"
-      odom.start_record()
+    #  odom.start_record()
       #time.sleep(1)
     time.sleep(2) # give other process time to start
+    inst_str = "start"
+    writer.publish(inst_str)
     move_group.execute(plan, wait=True)
+    inst_str = "stop"
+    writer.publish(inst_str)
     #linked = move_group.get_current_pose
     #print "linked"
     #print linked
     #raw_input()
     
-    odom.stop_record()
+    #odom.stop_record()
     time.sleep(10) # this allows time to execute 
    
     print "Finish Execute Stopped Recording "
@@ -262,7 +266,8 @@ class MoveGroupPythonIntefaceTutorial(object):
     #tutorial.execute_plan(cartesian_plan, wait=True)
     #print plan
     #print fraction
-    ind.euclid = odom.evaluate()
+    ################ Remake this line cant call odom.anything 
+    #ind.euclid = odom.evaluate()
     print "Individual number",ind.indnum," has a euclidean of ",ind.euclid
     time.sleep(1)
     #odom.large_x = 100

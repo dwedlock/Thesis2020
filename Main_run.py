@@ -15,8 +15,11 @@ from moveit_commander.conversions import pose_to_list
 from gazebo_msgs.srv import GetModelState, GetModelStateRequest, GetLinkState
 from gazebo_msgs.msg import LinkState
 from odom import Odom
+import multiprocessing 
 from multiprocessing import Process , Queue
 from GA import *
+
+
 
 def main():
 
@@ -37,6 +40,14 @@ def main():
     vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
     
 
+    rospy.wait_for_service('/gazebo/get_model_state')
+    writer = rospy.Publisher('writer', String, queue_size=10)
+    filestring = rospy.Publisher('filestring', String, queue_size=100)
+    hello_str = "hello world %s" % rospy.get_time()
+    file_str = "/NewFile"
+    #rospy.loginfo(hello_str)
+    writer.publish(hello_str)
+    filestring.publish(file_str)
     print "Generating a population"
     pop = Population(20)
     #pop.printpop()
@@ -63,8 +74,9 @@ def main():
     loops = 0
     q = Queue()
     q2 = Queue()
-    odom = Odom(q,q2)
-    
+    #odom = Odom(q,q2)
+    #odom.run() # THis starts the logger of data 
+
     while (1):
       #random.seed(5)
       #xx = xx+0.1
@@ -77,6 +89,7 @@ def main():
 
         # SIMULATOR LOOP IND are updated with a Euclid distance 
         for individuals in pop.indinstances:
+
           print "New Path entered and Model Pos" 
           #print model_info_prox    
             #print "Can I Home? waiting on Raw Input"
@@ -84,14 +97,21 @@ def main():
           print "Should be at home position"
           tutorial.go_to_joint_state(0.1,-1.57,0.1,0.1,0.1,0.1) 
           rospy.sleep(2)
-          if individuals.evaluated == False: # this line ensures we only do the new ones 
+          if individuals.evaluated == False: # this line ensures we only do the new ones
+            #inst_str = "Start" #%s" % rospy.get_time()
+            file_str = "/Results/Sim/ind%sgen%s" % ((individuals.indnum), (loops))
+            #writer.publish(inst_str)
+            filestring.publish(file_str)
+
             pathlist = individuals.waypoints#[0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
-            cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,odom)
+            cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
             individuals.evaluated = True
+            inst_str = "Stop"
+            #writer.publish(inst_str)
           else:
             print "This individual was already assessed skipping to next"
 
-            #odom.run()
+            #
             #print "waiting on Raw Input"
             #raw_input()
 

@@ -6,6 +6,15 @@ from multiprocessing import Process , Queue
 from std_msgs.msg import Header
 from nav_msgs.msg import Odometry
 from gazebo_msgs.srv import GetModelState, GetModelStateRequest, GetLinkState, GetLinkStateRequest
+from std_msgs.msg import String
+
+from roslibpy import Message
+from roslibpy import Topic
+
+from compas_fab.backends import RosClient
+
+
+
 
 
 class Odom(Process):
@@ -17,6 +26,9 @@ class Odom(Process):
         self.queue = queue
         self.queue_two = queue_two
         rospy.wait_for_service('/gazebo/get_model_state')
+        
+        #rospy.init_node('talker', anonymous=True)
+        
         #self.large_x = 0.0
         #self.large_y = 0.0
         #self.large_z = 0.0
@@ -37,6 +49,12 @@ class Odom(Process):
         #self.signal = True
         self.queue.put(True)
         #r = rospy.Rate(10) #10Hz publish rate
+        #run()
+        #print "Odom Client Running "
+        self.pub = rospy.Publisher('chatter', String, queue_size=10)
+        self.rate = rospy.Rate(1) # 1 = 1 per second 10 = 10hz
+
+
 
 
     def run(self):
@@ -47,6 +65,39 @@ class Odom(Process):
         #self.queue.put(self.signal)
         #result = get_model_srv(model)
         #time.sleep(1)
+        print "Entering While Loop"
+        while not rospy.is_shutdown():
+            self.hello_str = "hello world %s" % rospy.get_time()
+            rospy.loginfo(self.hello_str)
+            self.pub.publish(self.hello_str)
+            self.rate.sleep()
+            print "I am running"
+
+
+        # print "Odom Client Running "
+        # pub = rospy.Publisher('chatter', String, queue_size=10)
+        # rate = rospy.Rate(10) # 10hz
+        # print "Entering While Loop"
+        # while not rospy.is_shutdown():
+        #     hello_str = "hello world %s" % rospy.get_time()
+        #     rospy.loginfo(hello_str)
+        #     self.pub.publish(hello_str)
+        #     self.rate.sleep()
+        #     print "I am running"
+
+
+
+        # with RosClient() as client:
+        #     talker = Topic(client, '/chatter', 'std_msgs/String')
+
+        #     while client.is_connected:
+        #         talker.publish(Message({'data': 'Hello World!'}))
+        #         print('Sending message...')
+        #         time.sleep(1)
+
+        #     talker.unadvertise()
+        print "Woops we exited the client"
+
         timer = 0
         truth = self.queue.get()
         print "Im starting the recording loop"

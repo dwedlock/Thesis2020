@@ -87,7 +87,7 @@ def main():
         pop.indinstances.sort(key=lambda x: x.euclid,reverse=False)
         ###Below CALLS GA FUNCTIONS FOR GA AND NEW POP INSTANCES
         #print_all(pop) #GA function call to print all individuals
-        evaluate_ind(pop) # GA function call Note also generates the new individuals 
+        evaluate_ind(pop) # GA function call Note also generates the new individuals passes whole population
 
     print "============ Exiting the Loop!"
 
