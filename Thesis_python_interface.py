@@ -244,7 +244,9 @@ class MoveGroupPythonIntefaceTutorial(object):
       #time.sleep(1)
     time.sleep(2) # give other process time to start
     inst_str = "start"
+    
     writer.publish(inst_str)
+    time.sleep(.1)# this sleep ensures we pick it up
     move_group.execute(plan, wait=True)
     inst_str = "stop"
     writer.publish(inst_str)

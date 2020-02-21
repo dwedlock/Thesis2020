@@ -8,13 +8,28 @@ from nav_msgs.msg import Odometry
 from gazebo_msgs.srv import GetModelState, GetModelStateRequest, GetLinkState, GetLinkStateRequest
 from std_msgs.msg import String
 
+recording = False
+file_to_write = ""
 
 def callback(data):
     print "am I called at all"
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
     print data.data
+    global recording
+    if data.data == "start":
+        recording = True
+    if data.data == "stop":
+        recording = False
+
+    return data.data
+
+def callback_file(data_file):
+    global file_to_write
+    file_to_write = data_file.data
+    print file_to_write
 
 def main():
+    global recording
     rospy.init_node('listener', anonymous=True)
     rospy.wait_for_service('/gazebo/get_model_state')
         #while not rospy.is_shutdown():
@@ -38,16 +53,36 @@ def main():
             #rospy.loginfo(hello_str)
             #pub.publish(hello_str)
         rospy.Subscriber("writer", String, callback)
-
+        #'filestring'
+        rospy.Subscriber("filestring", String, callback_file)
+        print "recording ",recording 
+        print "file ",file_to_write
+        #print "i Received back ", data_return
         #print "Looping"
-        time.sleep(1) 
+        time.sleep(.1) 
         linkresult = get_link_srv(link)
+        # These values are for each timestep writen to each row
         x = linkresult.link_state.pose.position.x
-                    
-                    
         y = linkresult.link_state.pose.position.y
-                    
         z = linkresult.link_state.pose.position.z
+        if recording == True:
+            with open(file_to_write, 'a') as csvfile:
+                writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+                writer.writerow([x,",",y,",",z])
+            
+    #                 x = linkresult.link_state.pose.position.x
+                    
+                    
+    #                 y = linkresult.link_state.pose.position.y
+                    
+    #                 z = linkresult.link_state.pose.position.z
+                    
+    #                 #self.queue_two.put(x)
+    #                 #self.queue_two.put(y)
+    #                 #self.queue_two.put(z)
+    #                
+        ##WITE TO THE CSV/XML file 
+
         #print "X ", x, "Y ",y, "Z",z
         #listener()
         
@@ -100,19 +135,7 @@ def main():
     #             link.link_name = 'wrist_3_link'
     #             linkresult = get_link_srv(link)
     #             #print "X",linkresult.link_state.pose.position.x, "Y", linkresult.link_state.pose.position.y, "Z", linkresult.link_state.pose.position.z
-    #             with open('records.csv', 'a') as csvfile:
-    #                 writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-    #                 x = linkresult.link_state.pose.position.x
-                    
-                    
-    #                 y = linkresult.link_state.pose.position.y
-                    
-    #                 z = linkresult.link_state.pose.position.z
-                    
-    #                 #self.queue_two.put(x)
-    #                 #self.queue_two.put(y)
-    #                 #self.queue_two.put(z)
-    #                 writer.writerow([x,",",y,",",z])
+
             
     #             #self.r.sleep() # makes sure 10 hz
     #         else:

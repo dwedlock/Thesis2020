@@ -13,6 +13,7 @@ def evaluate_ind(all_ind): # recall the whole pop
     loop = 0
     ## Decision Point
     # Keep Best 5? 
+    # sorts best to worst Euclidean 
     all_ind.indinstances.sort(key=lambda x: x.euclid,reverse=False)
 
 

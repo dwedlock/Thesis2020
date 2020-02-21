@@ -41,8 +41,8 @@ def main():
     
 
     rospy.wait_for_service('/gazebo/get_model_state')
-    writer = rospy.Publisher('writer', String, queue_size=10)
-    filestring = rospy.Publisher('filestring', String, queue_size=100)
+    writer = rospy.Publisher('writer', String, queue_size=1)
+    filestring = rospy.Publisher('filestring', String, queue_size=1)
     hello_str = "hello world %s" % rospy.get_time()
     file_str = "/NewFile"
     #rospy.loginfo(hello_str)
@@ -61,7 +61,7 @@ def main():
     print "Success adding table "
     time.sleep(1)
 
-    print "============ Press `Enter` to execute joint state goal ..."
+    print "============ Please start Recorder and then Press `Enter` to execute joint state goal ..."
     raw_input()
     tutorial.go_to_joint_state(0.0,-0.5,0.0,0.0,0.0,0.0) # note Rads each joint 
   #print "============ Press `Enter` to execute a movement using a pose goal ..."
@@ -89,6 +89,8 @@ def main():
 
         # SIMULATOR LOOP IND are updated with a Euclid distance 
         for individuals in pop.indinstances:
+          
+          file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
 
           print "New Path entered and Model Pos" 
           #print model_info_prox    
@@ -99,14 +101,14 @@ def main():
           rospy.sleep(2)
           if individuals.evaluated == False: # this line ensures we only do the new ones
             #inst_str = "Start" #%s" % rospy.get_time()
-            file_str = "/Results/Sim/ind%sgen%s" % ((individuals.indnum), (loops))
+            file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
             #writer.publish(inst_str)
             filestring.publish(file_str)
 
             pathlist = individuals.waypoints#[0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
             cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
             individuals.evaluated = True
-            inst_str = "Stop"
+            #inst_str = "Stop"
             #writer.publish(inst_str)
           else:
             print "This individual was already assessed skipping to next"
