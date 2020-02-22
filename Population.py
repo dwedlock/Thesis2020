@@ -9,6 +9,7 @@ from GA import *
 
 class Population:
     indcount = 1
+    gencount = 1
     indinstances = []
     indinstanceshistory = []
     def __init__(self,numberinds):
@@ -22,7 +23,7 @@ class Population:
 
 
 
-    def generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax):
+    def generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen):
         print "Generating individuals"
         for x in range (0,num): # ie for each individual 
             
@@ -63,10 +64,13 @@ class Population:
             #print "Xpos", x_pos
             #print "ypos", y_pos
 
-            add = Individual(Population.indcount,number_points,x_pos,y_pos,z_pos,v_max)
+            add = Individual(Population.indcount,number_points,x_pos,y_pos,z_pos,v_max,gen)
             Population.indinstances.append(add)
             Population.indinstanceshistory.append(add)
             Population.indcount = Population.indcount + 1
+            #for each individual write a record
+
+
 
 
     def printpop(self):
@@ -78,6 +82,11 @@ class Population:
             individuals.printIndnum()
             print "Generating the waypoints for the initial population"
             individuals.generate_wp()
+
+
+
+
+
         #self.me.printIndnum()
 
 

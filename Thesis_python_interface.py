@@ -97,6 +97,18 @@ class MoveGroupPythonIntefaceTutorial(object):
     print "DW============ Printing robot state"
     print robot.get_current_state()
     print ""
+
+    box_pose = geometry_msgs.msg.PoseStamped()
+    box_pose.header.frame_id = robot.get_planning_frame()
+    box_pose.pose.orientation.w = 1.0
+    box_pose.pose.position.x = 0.0 # slightly above the end effector
+    box_pose.pose.position.y = 0.0 # slightly above the end effector
+    box_pose.pose.position.z = -0.02 # slightly above the end effector
+    box_name = "box"
+    time.sleep(2) # this is required to give the sim time to
+    scene.add_box(box_name, box_pose, size=(10, 10, 0.01))
+    #self.box_name=box_name
+    time.sleep(2) # this is required to give the sim time to upload 
     ## END_SUB_TUTORIAL
 
     # Misc variables
@@ -256,20 +268,25 @@ class MoveGroupPythonIntefaceTutorial(object):
     time.sleep(.1)# this sleep ensures we pick it up
     if plan != -1:
       move_group.execute(plan, wait=True)
+      ind.success = True 
     if plan == -1:
       print "Plan failure -1 returned, this was a bad plan"
       os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
-      
+      #The line below ensures that we dont try and evaluate this individual later and get csv read errors. 
+      ind.evaluated = True
+      ind.success = False
       frequency = 2500  # Set Frequency To 2500 Hertz
       duration = 1000  # Set Duration To 1000 ms == 1 second
       winsound.Beep(frequency, duration)
+
+    time.sleep(.1)
     inst_str = "stop"
     writer.publish(inst_str)
     #linked = move_group.get_current_pose
     #print "linked"
     #print linked
     #raw_input()
-    
+    time.sleep(.1)
     #odom.stop_record()
     time.sleep(10) # this allows time to execute 
    
@@ -355,11 +372,11 @@ class MoveGroupPythonIntefaceTutorial(object):
  
   def add_box(self, timeout=10):
       box_pose = geometry_msgs.msg.PoseStamped()
-      box_pose.header.frame_id = "base"
+      box_pose.header.frame_id = robot.get_planning_frame()
       box_pose.pose.orientation.w = 1.0
       box_pose.pose.position.x = 0.0 # slightly above the end effector
       box_pose.pose.position.y = 0.0 # slightly above the end effector
-      box_pose.pose.position.z = 0.0 # slightly above the end effector
+      box_pose.pose.position.z = -0.02 # slightly above the end effector
       box_name = "box"
       time.sleep(2) # this is required to give the sim time to
       self.scene.add_box(box_name, box_pose, size=(10, 10, 0.01))

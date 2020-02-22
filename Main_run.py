@@ -30,12 +30,12 @@ def main():
     rospy.wait_for_service('/gazebo/get_link_state')
     # Initial population has these ranges for 10 positions
     numpoints = [1,9]
-    xmin = [-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
-    xmax = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
-    ymin = [-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
-    ymax = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
-    zmin = [0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4]
-    zmax = [1.4,1.4,1.4,1.4,1.4,1.4,1.4,1.4,1.4,1.4]
+    xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
+    xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
+    ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
+    ymax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]#[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+    zmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+    zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
     vmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
     vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
     
@@ -52,12 +52,13 @@ def main():
     pop = Population(20)
     #pop.printpop()
     #Generate an initial population of 20
-    pop.generate_inds(pop.numberinds,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax)
+    generation = pop.gencount
+    pop.generate_inds(pop.numberinds,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,generation)
     # print the whole population 
     pop.gen_wp()
 
     print "adding a table for collisions"
-    tutorial.add_box()
+    #tutorial.add_box()
     print "Success adding table "
     time.sleep(1)
 
@@ -101,7 +102,7 @@ def main():
           rospy.sleep(2)
           if individuals.evaluated == False: # this line ensures we only do the new ones
             #inst_str = "Start" #%s" % rospy.get_time()
-            individuals.gen = loops
+            #individuals.gen = pop.gencount
             file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
             #writer.publish(inst_str)
             filestring.publish(file_str)

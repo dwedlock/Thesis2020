@@ -47,6 +47,12 @@ def calc_euclid(individual):
             #print p2
             individual.euclid = individual.euclid + distance.euclidean(p1,p2)
         print "Euclidean Composite from 0,0,0 to every point at 10hz recording frequency", individual.euclid
+        
+        file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individual.indnum),(individual.gen))
+        with open(file_ind, 'a') as csvfile:
+            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+            writer.writerow([individual.euclid])
+            writer.writerow([individual.success])
 
 
 
@@ -146,7 +152,7 @@ def grabGenertics(remain_ind):
             print "Out of points"
         
         print "New Version Ind"
-        print "Number Points",numpoints[0],num_points[1]
+        print "Number Points",numpoints[0],numpoints[1]
         print new_xmin#.append(xold[0]) # list if 10ish min max
         print new_xmax#.append(xold[-1]) # list if 10ish min max
         print new_ymin#.append(yold[0]) # list if 10ish min max
@@ -177,7 +183,8 @@ def grabGenertics(remain_ind):
 
     #send the new min max for each coordinate point to the new population generator. 
     print "generating new pop of ", newnum
-    remain_ind.generate_inds(newnum,numpoints,new_xmin,new_xmax,new_ymin,new_ymax,new_zmin,new_zmax,new_vmin,new_vmax)
+    remain_ind.gencount = remain_ind.gencount +1
+    remain_ind.generate_inds(newnum,numpoints,new_xmin,new_xmax,new_ymin,new_ymax,new_zmin,new_zmax,new_vmin,new_vmax,remain_ind.gencount)
     for individuals in remain_ind.indinstances:
         if individuals.evaluated == False:
             remain_ind.gen_wp()

@@ -1,10 +1,11 @@
 
 
 from copy import deepcopy
+import csv
 
 class Individual:
 
-    def __init__(self,indnum,number_points,xpos,ypos,zpos,vmax):
+    def __init__(self,indnum,number_points,xpos,ypos,zpos,vmax,gen):
         self.alive = True
         self.evaluated = False
         self.indnum = indnum
@@ -15,7 +16,8 @@ class Individual:
         self.num_points = number_points
         self.waypoints = []
         self.euclid = 50000 # super large number to begin with
-        self.gen = 0
+        self.gen = gen
+        self.success = False
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):
@@ -36,6 +38,19 @@ class Individual:
             self.waypoints.append(self.ypos[i])
             self.waypoints.append(self.zpos[i])
             self.waypoints.append(self.vmax[i])
+        
+        file_ind = "Results/Individuals/ind%sgen%s.csv" % ((self.indnum),(self.gen))
+        with open(file_ind, 'a') as csvfile:
+            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+            writer.writerow([self.gen])
+            writer.writerow([self.indnum])
+            writer.writerow([self.num_points])
+            #for val in self.xpos:
+            writer.writerow(self.xpos)
+            writer.writerow(self.ypos)
+            writer.writerow(self.zpos)
+            writer.writerow(self.vmax)            
+
         #print "My Waypoints"
         #print self.waypoints
 

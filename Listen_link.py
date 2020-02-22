@@ -48,7 +48,7 @@ def main():
     link.link_name = 'wrist_3_link'
     #rospy.init_node('listener', anonymous=True)
 
-    while not rospy.is_shutdown():
+    while True:
             #hello_str = "hello world %s" % rospy.get_time()
             #rospy.loginfo(hello_str)
             #pub.publish(hello_str)
