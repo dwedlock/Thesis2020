@@ -226,7 +226,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     print "planning for individual", ind.indnum
     (plan, fraction) = move_group.compute_cartesian_path(
                                        waypoints,   # waypoints to follow
-                                       0.01,        # eef_step # Dear David, leave this alone
+                                       0.005,        # eef_step # Dear David, leave this alone
                                        0.0,   # jump_threshold
                                        avoid_collisions = True,
                                        path_constraints = None )         
