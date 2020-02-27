@@ -280,6 +280,7 @@ class MoveGroupPythonIntefaceTutorial(object):
       #The line below ensures that we dont try and evaluate this individual later and get csv read errors. 
       ind.sim_run = True
       ind.success = False
+      ind.euclid = random.randint(0, 100) 
       #frequency = 2500  # Set Frequency To 2500 Hertz
       #duration = 1000  # Set Duration To 1000 ms == 1 second
       #winsound.Beep(frequency, duration)
