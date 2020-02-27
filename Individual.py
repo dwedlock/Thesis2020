@@ -18,15 +18,17 @@ class Individual:
         self.euclid = 0 #
         self.gen = gen
         self.success = False
+        self.mutated = False
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):
-        print "Turn this on for all stats print"
-        #print self.indnum
-        #print self.xpos
-        #print self.ypos
-        #print self.zpos
-        #print self.vmax
+        print " Printing"
+        #print "Turn this on for all stats print"
+        print self.indnum
+        print "X", str(self.xpos)[1:-1]
+        print "Y", str(self.ypos)[1:-1]
+        print "Z", str(self.zpos)[1:-1]
+        print "V", str(self.vmax)[1:-1]
 
     def generate_wp(self):
         loop = 0

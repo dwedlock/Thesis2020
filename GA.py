@@ -127,9 +127,35 @@ def generate_new_gen(remain_ind):
         individuals_to_reproduce.pop(0)
     
     #Mutate the Children randomly 
-
+    mutate(remain_ind)
     # Generate the WP for children
     remain_ind.gen_wp()
+
+def mutate(remain_ind):
+
+    for individuals in remain_ind.current_ind_instances:
+        will_mutate = random.randint(0, 10) # one in 10 chance to mutate
+        individuals.printIndnum
+        print "Mutating"
+
+        if will_mutate >= 5:
+            print "This individual", individuals.indnum, "will be mutated "
+            number_genes_to_mutate = random.randint(0, 10) # how many genes might be mutated
+            #maxwp = individuals.num_points # this is the max number of points
+            #waypoints_to_mutate = []
+            for i in range(0,number_genes_to_mutate):
+                x_mut = random.choice(individuals.xpos)
+                y_mut = random.choice(individuals.ypos) 
+                z_mut = random.choice(individuals.zpos) 
+                x_mut = 0.0
+                y_mut = 0.0
+                z_mut = 0.0
+        print "Finihsed Mutating"
+        individuals.printIndnum
+        raw_input()
+
+
+
 
 
 def generate_new_children(remain_ind,parent_1, parent_2):
@@ -171,14 +197,14 @@ def generate_new_children(remain_ind,parent_1, parent_2):
         long_parent = parent_2
         equal = True 
 
-    print "Cross Over Point",crossover_point," short parent == ", short_parent
-    print "Short Parent X" , str(short_parent.xpos)[1:-1]
-    print "Short Parent Y" , str(short_parent.ypos)[1:-1]
-    print "Short Parent Z" , str(short_parent.zpos)[1:-1]
+    # print "Cross Over Point",crossover_point," short parent == ", short_parent
+    # print "Short Parent X" , str(short_parent.xpos)[1:-1]
+    # print "Short Parent Y" , str(short_parent.ypos)[1:-1]
+    # print "Short Parent Z" , str(short_parent.zpos)[1:-1]
 
-    print "Long Parent X" , str(long_parent.xpos)[1:-1]
-    print "Long Parent Y" , str(long_parent.ypos)[1:-1]
-    print "Long Parent Z" , str(long_parent.zpos)[1:-1]
+    # print "Long Parent X" , str(long_parent.xpos)[1:-1]
+    # print "Long Parent Y" , str(long_parent.ypos)[1:-1]
+    # print "Long Parent Z" , str(long_parent.zpos)[1:-1]
     # cross over point represnets the number of points avilable in the smallest parent 
     
     child_1x = []
@@ -264,107 +290,19 @@ def generate_new_children(remain_ind,parent_1, parent_2):
         for val in short_parent.vmax[crossover_point:None]: 
             child_1v.append(val)    
 
-    print "Child 1 X", str(child_1x)[1:-1]
-    print "Child 1 Y", str(child_1y)[1:-1]
-    print "Child 1 Z", str(child_1z)[1:-1]
+    # print "Child 1 X", str(child_1x)[1:-1]
+    # print "Child 1 Y", str(child_1y)[1:-1]
+    # print "Child 1 Z", str(child_1z)[1:-1]
 
-    print "Child 2 X", str(child_2x)[1:-1]
-    print "Child 2 Y", str(child_2y)[1:-1]
-    print "Child 2 Z", str(child_2z)[1:-1]
-
-    raw_input()
+    # print "Child 2 X", str(child_2x)[1:-1]
+    # print "Child 2 Y", str(child_2y)[1:-1]
+    # print "Child 2 Z", str(child_2z)[1:-1]
     remain_ind.indcount = remain_ind.indcount + 1
-
-    ## First Child 
-    #Note we dont use generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen): as this is a random initializer only 
-
     add = Individual(remain_ind.indcount,child_1num,child_1x,child_1y,child_1z,child_1v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
 
     remain_ind.indcount = remain_ind.indcount + 1
-
     add = Individual(remain_ind.indcount,child_2num,child_2x,child_2y,child_2z,child_2v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
-
-    raw_input()
-
-    #print "generating new child of ", newnum
-    #remain_ind.gencount = remain_ind.gencount +1
-    #remain_ind.generate_inds(newnum,numpoints,new_xmin,new_xmax,new_ymin,new_ymax,new_zmin,new_zmax,new_vmin,new_vmax,remain_ind.gencount)
-
-
-    # for individuals in remain_ind.current_ind_instances:
-    #     #get all of the possible min max num points and put them in a list 
-    #     #individuals.printIndnum()
-    #     #print "h"
-    #     val = deepcopy(individuals.returnnumpoints())
-    #     #print val
-    #     #print "e"
-    #     sortnumpoints.append(val)
-    #     #print "re"
-    # sortnumpoints.sort()
-    # numpoints.append(sortnumpoints[0])    # new minimum
-    # numpoints.append(sortnumpoints[-1])   # new maximum
-    # print "new min max number points", numpoints
-            
-
-    # new_xmin = [] # list if 10ish min max
-    # new_xmax= [] # list if 10ish min max
-    # new_ymin= [] # list if 10ish min max
-    # new_ymax= [] # list if 10ish min max
-    # new_zmin= [] # list if 10ish min max
-    # new_zmax= [] # list if 10ish min max
-    # new_vmin= [] # list if 10ish min max
-    # new_vmax= [] # list if 10ish min max
-
-    # for i in range(0,9):# CHANGE FOR POSSIBLE POINTS CHAANGE
-    #     #create a list to sort for min max
-    #     xold = []
-    #     yold =[]
-    #     zold = []
-    #     vold = []
-    #     #for each lasting individual
-    #     for individuals in remain_ind.current_ind_instances:
-    #         try:
-    #             #Get the historical target x y z for each point
-
-    #             xold.append((individuals.returnx())[i])
-    #             yold.append((individuals.returny())[i])
-    #             zold.append((individuals.returnz())[i])
-    #             vold.append((individuals.returnv())[i])
-    #         except:
-    #             print "may be no points to copy ie shorter array"
-    #     #for each point Take each and sort to find new min max
-    #     xold.sort()
-    #     yold.sort()
-    #     zold.sort()
-    #     vold.sort()   
-    #     # for each point add a new min and max
-    #     try:
-    #         new_xmin.append(xold[0]) # list if 10ish min max
-    #         new_xmax.append(xold[-1]) # list if 10ish min max
-    #         new_ymin.append(yold[0]) # list if 10ish min max
-    #         new_ymax.append(yold[-1]) # list if 10ish min max
-    #         new_zmin.append(zold[0]) # list if 10ish min max
-    #         new_zmax.append(zold[-1]) # list if 10ish min max
-    #         new_vmin.append(vold[0]) # list if 10ish min max
-    #         new_vmax.append(vold[-1]) # list if 10ish min max
-    #     except:
-    #         print "Out of points"
-        
-    #     print "New Version Ind"
-    #     print "Number Points",numpoints[0],numpoints[1]
-    #     print new_xmin#.append(xold[0]) # list if 10ish min max
-    #     print new_xmax#.append(xold[-1]) # list if 10ish min max
-    #     print new_ymin#.append(yold[0]) # list if 10ish min max
-    #     print new_ymax#.append(yold[-1]) # list if 10ish min max
-    #     print new_zmin#.append(zold[0]) # list if 10ish min max
-    #     print new_zmax#.append(zold[-1]) # list if 10ish min max
-    #     print new_vmin#.append(vold[0]) # list if 10ish min max
-    #     print new_vmax#.append(vold[-1]) # list if 10ish min max        
-
-
-    #######pop.generate_inds(pop.numberinds,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax)
-    # reverse false fiv
