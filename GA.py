@@ -5,6 +5,7 @@ from itertools import izip
 import csv
 from scipy.spatial import distance
 import random
+from Individual import Individual
 
 def print_all_current(all_ind): # passed population
 
@@ -162,33 +163,52 @@ def generate_new_children(remain_ind,parent_1, parent_2):
         long_parent = parent_1
 
     print "Cross Over Point",crossover_point," short parent == ", short_parent
-    print "Short Parent X" , str(short_parent.xpos)[1:-1]
-    print "Short Parent Y" , str(short_parent.ypos)[1:-1]
-    print "Short Parent Z" , str(short_parent.zpos)[1:-1]
+    print "Long Parent X" , str(long_parent.xpos)[1:-1]
+    print "Long Parent Y" , str(long_parent.ypos)[1:-1]
+    print "Long Parent Z" , str(long_parent.zpos)[1:-1]
     # cross over point represnets the number of points avilable in the smallest parent 
+    child_1num = long_parent.num_points
     child_1x = []
     child_1y = []
     child_1z = []
+    child_1v = []
+    child_1num = short_parent.num_points
     child_2x = []
     child_2y = []
     child_2z = []
-    # Grab Second part of Geneome
+    child_2v = []
+    # Grab First part of Geneome
     for val in short_parent.xpos:
         child_1x.append(val)
     for val in short_parent.ypos:
         child_1y.append(val)
     for val in short_parent.zpos:
         child_1z.append(val)
-    # Grab first part of Geneome 
+    for val in short_parent.vmax:
+        child_1v.append(val)
+
+    # Grab Second part of Geneome 
     for val in long_parent.xpos[crossover_point:-1]: 
         child_1x.append(val)
     for val in long_parent.ypos[crossover_point:-1]: 
         child_1y.append(val)
-    for val in long_parent.ypos[crossover_point:-1]: 
+    for val in long_parent.zpos[crossover_point:-1]: 
         child_1z.append(val)
-    print "Child 1 X" , str(child_1x)[1:-1]
-    print "Child 1 Y" , str(child_1y)[1:-1]
-    print "Child 1 Z" , str(child_1z)[1:-1]
+    for val in long_parent.vmax[crossover_point:-1]: 
+        child_1v.append(val)        
+    #Only take a portion of the long parents DNA for the new shorter 2nd child 
+    for val in long_parent.xpos[1:crossover_point]:
+        child_2x.append(val)
+    for val in long_parent.ypos[1:crossover_point]:
+        child_2y.append(val)
+    for val in long_parent.zpos[1:crossover_point]:
+        child_2z.append(val)
+    for val in long_parent.vmax[1:crossover_point]:
+        child_2v.append(val)
+
+    print "Child 2 X", str(child_2x)[1:-1]
+    print "Child 2 Y", str(child_2y)[1:-1]
+    print "Child 2 Z", str(child_2z)[1:-1]
 
     raw_input()
     remain_ind.indcount = remain_ind.indcount + 1
@@ -196,10 +216,14 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     ## First Child 
     #Note we dont use generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen): as this is a random initializer only 
 
-    add = Individual(Population.indcount,number_points,x_pos,y_pos,z_pos,v_max,gen)
-    Population.current_ind_instances.append(add)
-    Population.indinstanceshistory.append(add)
-    Population.indcount = Population.indcount + 1
+    add = Individual(remain_ind.indcount,number_points,x_pos,y_pos,z_pos,v_max,gen)
+    remain_ind.current_ind_instances.append(add)
+    remain_ind.indinstanceshistory.append(add)
+
+
+
+
+    remain_ind.indcount = remain_ind.indcount + 1
 
 
 
