@@ -135,23 +135,40 @@ def mutate(remain_ind):
 
     for individuals in remain_ind.current_ind_instances:
         will_mutate = random.randint(0, 10) # one in 10 chance to mutate
-        individuals.printIndnum
+        individuals.printIndnum()
         print "Mutating"
 
         if will_mutate >= 5:
             print "This individual", individuals.indnum, "will be mutated "
-            number_genes_to_mutate = random.randint(0, 10) # how many genes might be mutated
-            #maxwp = individuals.num_points # this is the max number of points
+            number_genes_to_mutate = random.randint(1, 10) # how many genes might be mutated
+            print "Number of Genes to mutate", number_genes_to_mutate
+            max_wp_length = individuals.num_points # this is the max number of points
             #waypoints_to_mutate = []
+            if number_genes_to_mutate > max_wp_length:
+                number_genes_to_mutate = max_wp_length
+                
             for i in range(0,number_genes_to_mutate):
-                x_mut = random.choice(individuals.xpos)
-                y_mut = random.choice(individuals.ypos) 
-                z_mut = random.choice(individuals.zpos) 
-                x_mut = 0.0
-                y_mut = 0.0
-                z_mut = 0.0
+
+                print "In mutatind wp"
+                gene_to_mutate = random.randint(0,max_wp_length-1)
+
+                print "Gene",gene_to_mutate
+                value = individuals.xpos[gene_to_mutate] 
+                print "Value",value
+                individuals.xpos[gene_to_mutate] = (value * 20.0)
+
+                #gene_to_mutate = random.randint(0,max_wp_length)
+                value = individuals.ypos[gene_to_mutate] 
+                print "Value",value
+                individuals.ypos[gene_to_mutate] = (value * 20.0)
+                
+                #gene_to_mutate = random.randint(0,max_wp_length)
+                value = individuals.zpos[gene_to_mutate] 
+                print "Value",value
+                individuals.zpos[gene_to_mutate] = (value * 20.0)
+
         print "Finihsed Mutating"
-        individuals.printIndnum
+        individuals.printIndnum()
         raw_input()
 
 
