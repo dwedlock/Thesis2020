@@ -123,8 +123,8 @@ def generate_new_gen(remain_ind):
     for  i in range (0,10):
         # generate the new individuals 
         generate_new_children(remain_ind,individuals_to_reproduce[0], individuals_to_reproduce[1])
-        individuals_to_reproduce.pop[0]
-        individuals_to_reproduce.pop[0]
+        individuals_to_reproduce.pop(0)
+        individuals_to_reproduce.pop(0)
     
     #Mutate the Children randomly 
 
@@ -150,6 +150,7 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     # grab the lowest number of point 
 
     crossover_point = 0
+    equal = False
     #short_parent = 0 
     if parent_1.num_points < parent_2.num_points:
         crossover_point = parent_1.num_points
@@ -161,50 +162,111 @@ def generate_new_children(remain_ind,parent_1, parent_2):
         print "Case 2"
         short_parent = parent_2
         long_parent = parent_1
+    if parent_1.num_points == parent_2.num_points:
+        if parent_2.num_points > 2:
+            crossover_point = parent_2.num_points/2
+        else: crossover_point = 1
+
+        short_parent = parent_1
+        long_parent = parent_2
+        equal = True 
 
     print "Cross Over Point",crossover_point," short parent == ", short_parent
+    print "Short Parent X" , str(short_parent.xpos)[1:-1]
+    print "Short Parent Y" , str(short_parent.ypos)[1:-1]
+    print "Short Parent Z" , str(short_parent.zpos)[1:-1]
+
     print "Long Parent X" , str(long_parent.xpos)[1:-1]
     print "Long Parent Y" , str(long_parent.ypos)[1:-1]
     print "Long Parent Z" , str(long_parent.zpos)[1:-1]
     # cross over point represnets the number of points avilable in the smallest parent 
-    child_1num = long_parent.num_points
+    
     child_1x = []
     child_1y = []
     child_1z = []
     child_1v = []
-    child_1num = short_parent.num_points
+    
     child_2x = []
     child_2y = []
     child_2z = []
     child_2v = []
-    # Grab First part of Geneome
-    for val in short_parent.xpos:
-        child_1x.append(val)
-    for val in short_parent.ypos:
-        child_1y.append(val)
-    for val in short_parent.zpos:
-        child_1z.append(val)
-    for val in short_parent.vmax:
-        child_1v.append(val)
+    if equal == False: # we are going to use the uneven part as the cross over point
+        print "Uneven Cross Over "
+        # Grab First part of Geneome
+        child_1num = long_parent.num_points
+        child_2num = short_parent.num_points
 
-    # Grab Second part of Geneome 
-    for val in long_parent.xpos[crossover_point:-1]: 
-        child_1x.append(val)
-    for val in long_parent.ypos[crossover_point:-1]: 
-        child_1y.append(val)
-    for val in long_parent.zpos[crossover_point:-1]: 
-        child_1z.append(val)
-    for val in long_parent.vmax[crossover_point:-1]: 
-        child_1v.append(val)        
-    #Only take a portion of the long parents DNA for the new shorter 2nd child 
-    for val in long_parent.xpos[1:crossover_point]:
-        child_2x.append(val)
-    for val in long_parent.ypos[1:crossover_point]:
-        child_2y.append(val)
-    for val in long_parent.zpos[1:crossover_point]:
-        child_2z.append(val)
-    for val in long_parent.vmax[1:crossover_point]:
-        child_2v.append(val)
+        for val in short_parent.xpos:
+            child_1x.append(val)
+        for val in short_parent.ypos:
+            child_1y.append(val)
+        for val in short_parent.zpos:
+            child_1z.append(val)
+        for val in short_parent.vmax:
+            child_1v.append(val)
+
+        # Grab Second part of Geneome 
+        for val in long_parent.xpos[crossover_point:None]: 
+            child_1x.append(val)
+        for val in long_parent.ypos[crossover_point:None]: 
+            child_1y.append(val)
+        for val in long_parent.zpos[crossover_point:None]: 
+            child_1z.append(val)
+        for val in long_parent.vmax[crossover_point:None]: 
+            child_1v.append(val)        
+        #Only take a portion of the long parents DNA for the new shorter 2nd child 
+        for val in long_parent.xpos[0:crossover_point]:
+            child_2x.append(val)
+        for val in long_parent.ypos[0:crossover_point]:
+            child_2y.append(val)
+        for val in long_parent.zpos[0:crossover_point]:
+            child_2z.append(val)
+        for val in long_parent.vmax[0:crossover_point]:
+            child_2v.append(val)
+    if equal == True: 
+        child_1num = long_parent.num_points
+        child_2num = short_parent.num_points
+        print "Even Cross over from Half"
+
+        for val in long_parent.xpos[0:crossover_point]: 
+            child_1x.append(val)
+        for val in long_parent.ypos[0:crossover_point]: 
+            child_1y.append(val)
+        for val in long_parent.zpos[0:crossover_point]: 
+            child_1z.append(val)
+        for val in long_parent.vmax[0:crossover_point]: 
+            child_1v.append(val)     
+
+        for val in short_parent.xpos[0:crossover_point]: 
+            child_2x.append(val)
+        for val in short_parent.ypos[0:crossover_point]: 
+            child_2y.append(val)
+        for val in short_parent.zpos[0:crossover_point]: 
+            child_2z.append(val)
+        for val in short_parent.vmax[0:crossover_point]: 
+            child_2v.append(val)     
+
+        for val in long_parent.xpos[crossover_point:None]: 
+            child_2x.append(val)
+        for val in long_parent.ypos[crossover_point:None]: 
+            child_2y.append(val)
+        for val in long_parent.zpos[crossover_point:None]: 
+            child_2z.append(val)
+        for val in long_parent.vmax[crossover_point:None]: 
+            child_2v.append(val)   
+
+        for val in short_parent.xpos[crossover_point:None]: 
+            child_1x.append(val)
+        for val in short_parent.ypos[crossover_point:None]: 
+            child_1y.append(val)
+        for val in short_parent.zpos[crossover_point:None]: 
+            child_1z.append(val)
+        for val in short_parent.vmax[crossover_point:None]: 
+            child_1v.append(val)    
+
+    print "Child 1 X", str(child_1x)[1:-1]
+    print "Child 1 Y", str(child_1y)[1:-1]
+    print "Child 1 Z", str(child_1z)[1:-1]
 
     print "Child 2 X", str(child_2x)[1:-1]
     print "Child 2 Y", str(child_2y)[1:-1]
@@ -216,24 +278,22 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     ## First Child 
     #Note we dont use generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen): as this is a random initializer only 
 
-    add = Individual(remain_ind.indcount,number_points,x_pos,y_pos,z_pos,v_max,gen)
+    add = Individual(remain_ind.indcount,child_1num,child_1x,child_1y,child_1z,child_1v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
 
-
-
-
     remain_ind.indcount = remain_ind.indcount + 1
 
+    add = Individual(remain_ind.indcount,child_2num,child_2x,child_2y,child_2z,child_2v,remain_ind.gencount)
+    remain_ind.current_ind_instances.append(add)
+    remain_ind.indinstanceshistory.append(add)
 
+    raw_input()
 
-
-    print "generating new child of ", newnum
-    remain_ind.gencount = remain_ind.gencount +1
+    #print "generating new child of ", newnum
+    #remain_ind.gencount = remain_ind.gencount +1
     #remain_ind.generate_inds(newnum,numpoints,new_xmin,new_xmax,new_ymin,new_ymax,new_zmin,new_zmax,new_vmin,new_vmax,remain_ind.gencount)
-    for individuals in remain_ind.current_ind_instances:
-        if individuals.evaluated == False:
-            remain_ind.gen_wp()
+
 
     # for individuals in remain_ind.current_ind_instances:
     #     #get all of the possible min max num points and put them in a list 

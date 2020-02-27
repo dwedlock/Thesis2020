@@ -81,8 +81,8 @@ class Population:
     
     def gen_wp(self):
         for individuals in Population.current_ind_instances:
-            individuals.printIndnum()
-            print "Generating the waypoints for the initial population"
+            #individuals.printIndnum()
+            #print "Generating the waypoints for the initial population"
             individuals.generate_wp()
 
 

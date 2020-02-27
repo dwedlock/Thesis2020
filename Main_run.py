@@ -29,7 +29,7 @@ def main():
     model_info_prox = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
     rospy.wait_for_service('/gazebo/get_link_state')
     # Initial population has these ranges for 10 positions
-    numpoints = [1,9]
+    numpoints = [2,9]
     xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
     xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
     ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]

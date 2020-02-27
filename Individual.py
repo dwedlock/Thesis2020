@@ -30,7 +30,7 @@ class Individual:
 
     def generate_wp(self):
         loop = 0
-        print "num points ",self.num_points
+        #print "num points ",self.num_points
         for i in range(0,self.num_points):
             #print "Loop",loop
             loop = loop + 1
