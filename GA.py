@@ -146,7 +146,7 @@ def mutate(remain_ind):
             #waypoints_to_mutate = []
             if number_genes_to_mutate > max_wp_length:
                 number_genes_to_mutate = max_wp_length
-                
+
             for i in range(0,number_genes_to_mutate):
 
                 print "In mutatind wp"
@@ -155,6 +155,7 @@ def mutate(remain_ind):
                 print "Gene",gene_to_mutate
                 value = individuals.xpos[gene_to_mutate] 
                 print "Value",value
+                ######################################################################################
                 individuals.xpos[gene_to_mutate] = (value * 20.0)
 
                 #gene_to_mutate = random.randint(0,max_wp_length)
