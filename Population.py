@@ -10,13 +10,15 @@ from GA import *
 class Population:
     indcount = 1
     gencount = 1
-    indinstances = []
+    current_ind_instances = []
     indinstanceshistory = []
     def __init__(self,numberinds):
         
         
         self.numberinds = numberinds
         self.numbpoints = random.randint(1,10)
+        #self.num_reproduce = numberinds
+        #self.
         
         print "Init worked"
         
@@ -65,7 +67,7 @@ class Population:
             #print "ypos", y_pos
 
             add = Individual(Population.indcount,number_points,x_pos,y_pos,z_pos,v_max,gen)
-            Population.indinstances.append(add)
+            Population.current_ind_instances.append(add)
             Population.indinstanceshistory.append(add)
             Population.indcount = Population.indcount + 1
             #for each individual write a record
@@ -78,7 +80,7 @@ class Population:
         #print self.number
     
     def gen_wp(self):
-        for individuals in Population.indinstances:
+        for individuals in Population.current_ind_instances:
             individuals.printIndnum()
             print "Generating the waypoints for the initial population"
             individuals.generate_wp()

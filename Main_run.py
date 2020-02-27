@@ -89,7 +89,7 @@ def main():
         #print_all(pop)
 
         # SIMULATOR LOOP IND are updated with a Euclid distance 
-        for individuals in pop.indinstances:
+        for individuals in pop.current_ind_instances:
 
           file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
 
@@ -100,7 +100,7 @@ def main():
           print "Should be at home position"
           tutorial.go_to_joint_state(0.1,-1.57,0.1,0.1,0.1,0.1) 
           rospy.sleep(2)
-          if individuals.evaluated == False: # this line ensures we only do the new ones
+          if individuals.sim_run == False: # this line ensures we only do the new ones
             #inst_str = "Start" #%s" % rospy.get_time()
             #individuals.gen = pop.gencount
             file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
@@ -109,7 +109,7 @@ def main():
 
             pathlist = individuals.waypoints#[0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
             cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
-            individuals.evaluated = True
+            individuals.sim_run = True
             #inst_str = "Stop"
             #writer.publish(inst_str)
           else:
@@ -122,16 +122,15 @@ def main():
 
         print "Evaluation Cycle"
         print "Sorting the individuals in this population"
-        pop.indinstances.sort(key=lambda x: x.euclid,reverse=False)
+        #pop.indinstances.sort(key=lambda x: x.euclid,reverse=False)
         ###CALL GA FUNCTIONS FOR GA AND NEW POP INSTANCES
-
         #print_all(pop)
-        evaluate_ind(pop) # This is a GA function call 
+        evaluate_pop(pop) # This is a GA function call to evauate this population before the next generation
 
 
         #for individuals in pop.indinstances:
         #  print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid
-          #evaluate_ind(individuals)
+          #evaluate_pop(individuals)
 
 
           

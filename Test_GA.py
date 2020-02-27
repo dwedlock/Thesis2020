@@ -62,7 +62,7 @@ def main():
     while (1):
         loops = loops + 1
         # SIMULATOR LOOP IND are updated with a Euclid distance 
-        for individuals in pop.indinstances:
+        for individuals in pop.current_ind_instances:
             individuals.gen = loops
             
           #print "New Path entered and Model Pos" 
@@ -86,7 +86,7 @@ def main():
 
         print "Evaluation Cycle"
         print "Sorting the individuals in this population"
-        pop.indinstances.sort(key=lambda x: x.euclid,reverse=False)
+        pop.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
         ###Below CALLS GA FUNCTIONS FOR GA AND NEW POP INSTANCES
         #print_all(pop) #GA function call to print all individuals
         evaluate_ind(pop) # GA function call Note also generates the new individuals passes whole population

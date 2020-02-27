@@ -224,18 +224,22 @@ class MoveGroupPythonIntefaceTutorial(object):
     #print "Way points"
     #print waypoints
     print "planning for individual", ind.indnum
-    (plan, fraction) = move_group.compute_cartesian_path(
-                                       waypoints,   # waypoints to follow
-                                       0.005,        # eef_step # Dear David, leave this alone
-                                       0.0,   # jump_threshold
-                                       avoid_collisions = True,
-                                       path_constraints = None )         
+    plan = -1
+    fraction = .1
+    ##############################################################
+    # (plan, fraction) = move_group.compute_cartesian_path(
+    #                                    waypoints,   # waypoints to follow
+    #                                    0.005,        # eef_step # Dear David, leave this alone
+    #                                    0.0,   # jump_threshold
+    #                                    avoid_collisions = True,
+    #                                    path_constraints = None )         
+    ###############time.sleep(30)
 
     # Note: We are just planning, not asking move_group to actually move the robot yet:
     #rospy.sleep(1)
     #print "Done planning if -1 is error PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
     #print plan
-    time.sleep(30)
+    
     #print "Display"
     #robot = self.robot
     #display_trajectory_publisher = self.display_trajectory_publisher
@@ -267,17 +271,18 @@ class MoveGroupPythonIntefaceTutorial(object):
     writer.publish(inst_str)
     time.sleep(.1)# this sleep ensures we pick it up
     if plan != -1:
-      move_group.execute(plan, wait=True)
+      ######################################################################################
+      #move_group.execute(plan, wait=True)
       ind.success = True 
     if plan == -1:
       print "Plan failure -1 returned, this was a bad plan"
       os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
       #The line below ensures that we dont try and evaluate this individual later and get csv read errors. 
-      ind.evaluated = True
+      ind.sim_run = True
       ind.success = False
-      frequency = 2500  # Set Frequency To 2500 Hertz
-      duration = 1000  # Set Duration To 1000 ms == 1 second
-      winsound.Beep(frequency, duration)
+      #frequency = 2500  # Set Frequency To 2500 Hertz
+      #duration = 1000  # Set Duration To 1000 ms == 1 second
+      #winsound.Beep(frequency, duration)
 
     time.sleep(.1)
     inst_str = "stop"
@@ -288,7 +293,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     #raw_input()
     time.sleep(.1)
     #odom.stop_record()
-    time.sleep(10) # this allows time to execute 
+    #time.sleep(10) # this allows time to execute 
    
     print "Finish Execute Stopped Recording "
     #print "Ive executed the plan"

@@ -7,7 +7,7 @@ class Individual:
 
     def __init__(self,indnum,number_points,xpos,ypos,zpos,vmax,gen):
         self.alive = True
-        self.evaluated = False
+        self.sim_run = False
         self.indnum = indnum
         self.xpos = deepcopy(xpos)
         self.ypos = deepcopy(ypos)
@@ -15,7 +15,7 @@ class Individual:
         self.vmax = deepcopy(vmax)
         self.num_points = number_points
         self.waypoints = []
-        self.euclid = 50000 # super large number to begin with
+        self.euclid = 0 #
         self.gen = gen
         self.success = False
         print "Init Ind", indnum, "completed"

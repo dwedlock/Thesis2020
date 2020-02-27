@@ -5,10 +5,17 @@ from itertools import izip
 import csv
 from scipy.spatial import distance
 
-def print_all(all_ind): # passed population
+def print_all_current(all_ind): # passed population
 
-    for individuals in all_ind.indinstances:
+    for individuals in all_ind.current_ind_instances:
         print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid
+
+def print_all_current(all_ind): # passed population
+    print "Entire History of Individuals in the order of their creation"
+
+    for individuals in all_ind.indinstanceshistory:
+        print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid , "Generation ", Individuals.gen
+
 
 def calc_euclid(individual):
     file_str = "Results/Sim/ind%sgen%s.csv" % ((individual.indnum), (individual.gen))
@@ -54,45 +61,48 @@ def calc_euclid(individual):
             writer.writerow([individual.euclid])
             writer.writerow([individual.success])
 
-
-
-
-
-
-def evaluate_ind(all_ind): # recall the whole pop
-    # ENTRY POINT OF GA
-    worst = 5
-    loop = 0
-    ## Decision Point
-    # Keep Best 5? 
-    #Generate the actual Eucideans from two excell spreadsheets
-    for individuals in all_ind.indinstances:
-        calc_euclid(individuals)
+def evaluate_pop(all_ind): # recall the whole pop
+    #### ENTRY POINT OF GA 
+    ### note all_ind is the entire population, all individuals ever created
+    ## We sort them into generations with a gen number 
+    worst_to_remove = ((all_ind.numberinds)/2)
+    #Generate the Eucideans from two csv files
+    for individuals in all_ind.current_ind_instances:
+        if (individuals.success == True) and (individuals.alive == True): # plan returned without error and we ran the simulation
+            calc_euclid(individuals)
     # sorts best to worst Euclidean 
-    all_ind.indinstances.sort(key=lambda x: x.euclid,reverse=False)
+    all_ind.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
 
-
-    for i in range(0,10):# kill bottom 5 NOTE must be less than pop number of crash
+    for i in range(0,worst_to_remove):# kill bottom half NOTE must be less than pop number of crash
         print "popping an ind"
-        topop = all_ind.indinstances[i]
+        topop = all_ind.current_ind_instances[i]
         topop.alive = False # this way the historical population can still be sorted for alive True/False 
-        all_ind.indinstances.pop(0)
-    print "New pop of 5 with 5 Dead"    
-    print_all(all_ind)
-    grabGenertics(all_ind)
-    # now grab their genetics
-    #es smallest to largest
+        all_ind.current_ind_instances.pop(0) # remove the individual from the current list 
+    print "New pop of X Elites with X Weaker removed "    
+    #print_all_current(all_ind)
+    generate_new_gen(all_ind)
 
-    #for individuals in all_ind.indinstances:
+def generate_new_gen(remain_ind):
+    # recall remain_ind is the entire population 
+    #remain_ind.current_ind_instances holds X number of Elites 
 
-    #Clear the current individuals
-    #    all_ind.indinstances = []
-def grabGenertics(remain_ind):
     newnum = 20 # this is how many new individuals to generate
     numpoints = []
     sortnumpoints = [] # list if two min max
 
-    for individuals in remain_ind.indinstances:
+    # Randomly Select who will populate out new parents who will pass on genetics
+    # To make the Fitest of the Elites most likely to reproduce we will pop each iteration so best have most chance of generating a child
+    individuals_to_reproduce = []
+    for i in range (0,remain_ind.numberinds):
+        individuals_to_reproduce.append(random.choice(remain_ind.current_ind_instances))
+        remain_ind.current_ind_instances.pop(0)
+    # results in a list 20 parents long, that can have repeats of the best parents
+    
+    for individuals in individuals_to_reproduce:
+        print "Luck Individual",individuals.indnum
+
+
+    for individuals in remain_ind.current_ind_instances:
         #get all of the possible min max num points and put them in a list 
         #individuals.printIndnum()
         #print "h"
@@ -123,7 +133,7 @@ def grabGenertics(remain_ind):
         zold = []
         vold = []
         #for each lasting individual
-        for individuals in remain_ind.indinstances:
+        for individuals in remain_ind.current_ind_instances:
             try:
                 #Get the historical target x y z for each point
 
@@ -182,10 +192,10 @@ def grabGenertics(remain_ind):
 
 
     #send the new min max for each coordinate point to the new population generator. 
-    print "generating new pop of ", newnum
+    print "generating new child of ", newnum
     remain_ind.gencount = remain_ind.gencount +1
     remain_ind.generate_inds(newnum,numpoints,new_xmin,new_xmax,new_ymin,new_ymax,new_zmin,new_zmax,new_vmin,new_vmax,remain_ind.gencount)
-    for individuals in remain_ind.indinstances:
+    for individuals in remain_ind.current_ind_instances:
         if individuals.evaluated == False:
             remain_ind.gen_wp()
     #######pop.generate_inds(pop.numberinds,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax)
