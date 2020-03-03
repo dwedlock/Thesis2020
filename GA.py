@@ -136,7 +136,7 @@ def mutate(remain_ind):
     for individuals in remain_ind.current_ind_instances:
         will_mutate = random.randint(0, 10) # one in 10 chance to mutate
         individuals.printIndnum()
-        print "Mutating"
+        #print "Mutating"
 
         if will_mutate >= 5:
             print "This individual", individuals.indnum, "will be mutated "
@@ -149,28 +149,29 @@ def mutate(remain_ind):
 
             for i in range(0,number_genes_to_mutate):
 
-                print "In mutatind wp"
+                #print "In mutating wp"
                 gene_to_mutate = random.randint(0,max_wp_length-1)
 
-                print "Gene",gene_to_mutate
+                #print "Gene",gene_to_mutate
                 value = individuals.xpos[gene_to_mutate] 
-                print "Value",value
+                #print "Value",value
                 ######################################################################################
-                individuals.xpos[gene_to_mutate] = (value * 20.0)
-
+                individuals.xpos[gene_to_mutate] = random.gauss(value,1)#(value * 20.0)
+                #print "New Value ",individuals.xpos[gene_to_mutate]
                 #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.ypos[gene_to_mutate] 
-                print "Value",value
-                individuals.ypos[gene_to_mutate] = (value * 20.0)
-                
+                #print "Value",value
+                individuals.ypos[gene_to_mutate] = random.gauss(value,1)#(value * 20.0)
+                #print "New Value ",individuals.ypos[gene_to_mutate]
                 #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.zpos[gene_to_mutate] 
-                print "Value",value
-                individuals.zpos[gene_to_mutate] = (value * 20.0)
+                #print "Value",value
+                individuals.zpos[gene_to_mutate] = random.gauss(value,1)#(value * 20.0)
+                #print "New Value ",individuals.zpos[gene_to_mutate]
 
         print "Finihsed Mutating"
         individuals.printIndnum()
-        raw_input()
+        #raw_input()
 
 
 
@@ -198,12 +199,12 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     #short_parent = 0 
     if parent_1.num_points < parent_2.num_points:
         crossover_point = parent_1.num_points
-        print "Case 1"
+        #print "Case 1"
         short_parent = parent_1
         long_parent = parent_2
     if parent_1.num_points > parent_2.num_points:
         crossover_point = parent_2.num_points
-        print "Case 2"
+        #print "Case 2"
         short_parent = parent_2
         long_parent = parent_1
     if parent_1.num_points == parent_2.num_points:
