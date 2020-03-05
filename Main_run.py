@@ -97,9 +97,13 @@ def main():
           #print model_info_prox    
             #print "Can I Home? waiting on Raw Input"
             #raw_input()
-          print "Should be at home position"
-          tutorial.go_to_joint_state(0.1,-1.57,0.1,0.1,0.1,0.1) 
-          rospy.sleep(2)
+          print "moving to home"
+          tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
+          time.sleep(10)
+          #tutorial.go_to_joint_state(0.1,-1.57,0.1,0.1,0.1,0.1) 
+          #tutorial.go_to_pose_goal(1,0.2,0.2,0.6)
+          #rospy.sleep(2)
+          print "Should be at home position, all joints Zero"
           if individuals.sim_run == False: # this line ensures we only do the new ones
             #inst_str = "Start" #%s" % rospy.get_time()
             #individuals.gen = pop.gencount
@@ -108,7 +112,22 @@ def main():
             filestring.publish(file_str)
 
             pathlist = individuals.waypoints#[0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
-            cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
+            ## This line was removed 
+            #cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
+            test = True
+            for i in range(0,(len(individuals.xpos))):
+
+              if test == True:
+                return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i])
+              if test == True:
+                test = return_tf
+              if test == False:
+                print "It was a bad point "
+              #time.sleep(.1)
+            
+
+
+
             individuals.sim_run = True
             #inst_str = "Stop"
             #writer.publish(inst_str)

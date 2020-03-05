@@ -72,6 +72,7 @@ def evaluate_pop(all_ind): # recall the whole pop
     for individuals in all_ind.current_ind_instances:
         if (individuals.success == True) and (individuals.alive == True): # plan returned without error and we ran the simulation
             calc_euclid(individuals)
+            print "Individual number",individuals.indnum," has a euclidean of ",individuals.euclid
     # sorts best to worst Euclidean 
     all_ind.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
 

@@ -72,7 +72,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     ## surrounding world:
     scene = moveit_commander.PlanningSceneInterface()
 
-    group_name = "manipulator"#"ur10" #was panda_arm
+    group_name = "manipulator"#"ur10" #was panda_arm This comes from universal_robot/ur10_moveit_config/config
     move_group = moveit_commander.MoveGroupCommander(group_name)
 
     ## Create a `DisplayTrajectory`_ ROS publisher which is used to display
@@ -103,7 +103,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     box_pose.pose.orientation.w = 1.0
     box_pose.pose.position.x = 0.0 # slightly above the end effector
     box_pose.pose.position.y = 0.0 # slightly above the end effector
-    box_pose.pose.position.z = -0.02 # slightly above the end effector
+    box_pose.pose.position.z = 0.01 # slightly above the end effector
     box_name = "box"
     time.sleep(2) # this is required to give the sim time to
     scene.add_box(box_name, box_pose, size=(10, 10, 0.01))
@@ -143,14 +143,27 @@ class MoveGroupPythonIntefaceTutorial(object):
     current_joints = move_group.get_current_joint_values()
     #print "Robot Currently at"
     #print self.robot.get_current_state()
+    move_group.allow_looking(True)
+    move_group.allow_replanning(True)
+    move_group.set_planning_time(30)
+    move_group.set_num_planning_attempts(100) #Gets ignored by RVIZ
+    move_group.set_goal_position_tolerance(0.5)
+    move_group.set_goal_orientation_tolerance(1.0)
+    move_group.set_goal_tolerance(0.5)
+    move_group.set_goal_joint_tolerance(0.5)
+
+
+
+
     return all_close(joint_goal, current_joints, 0.01)
 
 
-  def go_to_pose_goal(self,W,X,Y,Z):
+  def go_to_pose_goal(self,W,X,Y,Z,V):
     # Copy class variables to local variables to make the web tutorials more clear.
     move_group = self.move_group
-
-    print "Planning to a Pose Goal X ", X," Y ",Y," Z ",Z
+    move_group.set_max_velocity_scaling_factor(V)
+    move_group.set_max_acceleration_scaling_factor(0.1)
+    #print "Planning to a Pose Goal X ", X," Y ",Y," Z ",Z
     pose_goal = geometry_msgs.msg.Pose()
     # Note these are in Quarternians 
     pose_goal.orientation.w = W#1.0
@@ -159,21 +172,24 @@ class MoveGroupPythonIntefaceTutorial(object):
     pose_goal.position.z = Z#0.4 Confirmed as UP
     move_group.set_pose_target(pose_goal)
     ## Now, we call the planner to compute the plan and execute it.
+    print "We started to move", X, Y, Z
     plan = move_group.go(wait=True)
+    print "We finished a move", plan
     # Calling `stop()` ensures that there is no residual movement
     move_group.stop()
     # It is always good to clear your targets after planning with poses.
     # Note: there is no equivalent function for clear_joint_value_targets()
     move_group.clear_pose_targets()
     current_pose = self.move_group.get_current_pose().pose
-    return all_close(pose_goal, current_pose, 0.01)
+    #all_close(pose_goal, current_pose, 0.01)
+    return plan
 
 
   def plan_cartesian_path(self,coords,ind,writer,scale=1):
     #Can access the individual that we are acting upon below
     #ind.printIndnum()
-    print "Im in Planning"
-    print "Note I need x y z and velocity "
+    #print "Im in Planning"
+    #print "Note I need x y z and velocity "
     listcoords = [] #ensure empty
     listcoords = copy.deepcopy(coords)# can be any length in x y z x y z format
     #print "where are we going"
@@ -184,15 +200,9 @@ class MoveGroupPythonIntefaceTutorial(object):
 
     waypoints = [] # ensure empty 
     wpose = move_group.get_current_pose().pose
-    move_group.allow_looking(True)
-    move_group.allow_replanning(True)
-    move_group.set_planning_time(300)
-    move_group.set_num_planning_attempts(300)
-    move_group.set_goal_position_tolerance(0.01)
-    move_group.set_goal_orientation_tolerance(0.5)
-    move_group.set_goal_tolerance(0.5)
-    move_group.set_goal_joint_tolerance(0.5)
-    move_group.set_max_velocity_scaling_factor(0.5)
+
+    move_group.set_max_velocity_scaling_factor(0.1)
+    move_group.set_max_acceleration_scaling_factor(0.1)
     move_group.set_start_state_to_current_state()
 
     vel = []
@@ -219,98 +229,57 @@ class MoveGroupPythonIntefaceTutorial(object):
         #print listcoords
         waypoints.append(copy.deepcopy(wpose))
       else:
-        print "Either at end of list... or out of scope"
+        #print "Either at end of list... or out of scope"
         break
     #print "Way points"
     #print waypoints
-    print "planning for individual", ind.indnum
+    
     #plan = -1
     #fraction = .1
+    move_group.clear_pose_targets()
+    move_group.stop()
+    #current_pose = move_group.get_current_pose().pose
+    time.sleep(1)
     ##############################################################
+    print "planning for individual", ind.indnum
     (plan, fraction) = move_group.compute_cartesian_path(
                                         waypoints,   # waypoints to follow
-                                        0.005,        # eef_step # Dear David, leave this alone
+                                        0.01,        # eef_step # Dear David, leave this alone
                                         0.0,   # jump_threshold
-                                        avoid_collisions = True,
-                                        path_constraints = None )         
-    ###############time.sleep(30)
-
-    # Note: We are just planning, not asking move_group to actually move the robot yet:
-    #rospy.sleep(1)
-    #print "Done planning if -1 is error PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"
-    #print plan
-    
-    #print "Display"
-    #robot = self.robot
-    #display_trajectory_publisher = self.display_trajectory_publisher
-    #display_trajectory = moveit_msgs.msg.DisplayTrajectory()
-    #display_trajectory.trajectory_start = robot.get_current_state()
-    #display_trajectory.trajectory.append(plan)
-    #move_group.display_trajectory(plan)
-    #print "Fin display"
-    #time.sleep(20) # This allows time to display 
-    #print "Start Execute"
-    #move_group = self.move_group
-    #print odom.is_alive()
-    #if(odom.is_alive() == False):
-      #print "here"
-    #  odom.start()
-      #time.sleep(1)
-    #time.sleep(1)
-    #print odom.is_alive()
-    #if(odom.is_alive() == True):
-      #print "I started"
-    #  odom.start_record()
-      #time.sleep(1)
+                                        avoid_collisions = True)  
+    print "exited planner started timer purple movement should have stopped"       
+    time.sleep(30)
+    print "timer finished, planner should finihsed, fraction is ", fraction
     time.sleep(2) # give other process time to start
     inst_str = "start"
-    
-    duration = 5  # seconds
-    freq = 440  # Hz
-
+  
+    move_group.stop()
+    writer.publish(inst_str) # Starts the Listener
+    time.sleep(0.2)# this sleep ensures we pick it up
     writer.publish(inst_str)
-    time.sleep(.1)# this sleep ensures we pick it up
-    if plan != -1:
+    time.sleep(0.2)
+    if plan != -1 and fraction > 0.1:
       ######################################################################################
+      print "We have a good plan "
       move_group.execute(plan, wait=True)
       ind.success = True 
-    if plan == -1:
+    if plan == -1 or fraction < 0.1:
       print "Plan failure -1 returned, this was a bad plan"
-      os.system('play -nq -t alsa synth {} sine {}'.format(duration, freq))
-      #The line below ensures that we dont try and evaluate this individual later and get csv read errors. 
       ind.sim_run = True
       ind.success = False
-      #ind.euclid = random.randint(0, 100) 
-      #frequency = 2500  # Set Frequency To 2500 Hertz
-      #duration = 1000  # Set Duration To 1000 ms == 1 second
-      #winsound.Beep(frequency, duration)
 
-    time.sleep(.1)
+
+    time.sleep(0.2)
     inst_str = "stop"
-    writer.publish(inst_str)
-    #linked = move_group.get_current_pose
-    #print "linked"
-    #print linked
-    #raw_input()
-    time.sleep(.1)
-    #odom.stop_record()
-    #time.sleep(10) # this allows time to execute 
-   
+    writer.publish(inst_str) #stops the listener 
+    time.sleep(1)
+    writer.publish(inst_str) #stops the listener 
     print "Finish Execute Stopped Recording "
     #print "Ive executed the plan"
     #move_group.clear_pose_target()
     #move_group.clear_pose_targets()
     current_pose = self.move_group.get_current_pose().pose
-    
-    #tutorial.display_trajectory(cartesian_plan)  
-    #tutorial.execute_plan(cartesian_plan, wait=True)
-    #print plan
-    #print fraction
-    ################ Remake this line cant call odom.anything 
-    #ind.euclid = odom.evaluate()
-    print "Individual number",ind.indnum," has a euclidean of ",ind.euclid
     time.sleep(1)
-    #odom.large_x = 100
     return plan, fraction
 
 
