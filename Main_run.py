@@ -122,7 +122,7 @@ def main():
               if test == True:
                 test = return_tf
               if test == False:
-                individuals.success = True
+                individuals.success = False
                 individuals.euclid = 0
 
                 print "This individual ",individuals.indnum," has a bad waypoint given a Eucidean of Zero"

@@ -29,30 +29,45 @@ def callback_file(data_file):
     file_to_write = data_file.data
     print file_to_write
 
+def call_feedback(data_feedback):
+    print "Im being called"
+    rospy.loginfo(rospy.get_caller_id() + "getModelState %s", data_feedback)
+    #print data_feedback
+
 def main():
     global recording
     rospy.init_node('listener', anonymous=True)
     rospy.wait_for_service('/gazebo/get_model_state')
+    
         #while not rospy.is_shutdown():
     print "Im starting the recording loop"
     #rate = rospy.Rate(10) # 10hz
     get_link_srv = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
     link = GetLinkStateRequest()
     link.link_name = 'wrist_3_link'
+
+    get_model_srv = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
+    model = GetModelStateRequest()
+    model.model_name = 'robot'
     #rospy.init_node('listener', anonymous=True)
 
     while True:
             #hello_str = "hello world %s" % rospy.get_time()
             #rospy.loginfo(hello_str)
             #pub.publish(hello_str)
+        #rospy.Subscriber("status",String,call_feedback)
+
         rospy.Subscriber("writer", String, callback)
         #'filestring'
         rospy.Subscriber("filestring", String, callback_file)
-
+        
+        
         #print "i Received back ", data_return
         #print "Looping"
         time.sleep(.1) 
         linkresult = get_link_srv(link)
+        modelresult = get_model_srv(model)
+        print modelresult
         # These values are for each timestep writen to each row
         x = linkresult.link_state.pose.position.x
         y = linkresult.link_state.pose.position.y
