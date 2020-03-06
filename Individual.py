@@ -44,14 +44,15 @@ class Individual:
         file_ind = "Results/Individuals/ind%sgen%s.csv" % ((self.indnum),(self.gen))
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-            writer.writerow([self.gen])
-            writer.writerow([self.indnum])
-            writer.writerow([self.num_points])
+            writer.writerow([self.gen],'Generation')
+            writer.writerow([self.indnum],'Individual Number')
+            writer.writerow([self.num_points],'Number of points')
             #for val in self.xpos:
-            writer.writerow(self.xpos)
-            writer.writerow(self.ypos)
-            writer.writerow(self.zpos)
-            writer.writerow(self.vmax)            
+            
+            writer.writerows(self.xpos)
+            writer.writerows(self.ypos)
+            writer.writerows(self.zpos)
+            writer.writerows(self.vmax)            
 
         #print "My Waypoints"
         #print self.waypoints

@@ -116,13 +116,18 @@ def main():
             #cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
             test = True
             for i in range(0,(len(individuals.xpos))):
-
+              individuals.success = True
               if test == True:
-                return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i])
+                return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i],writer)
               if test == True:
                 test = return_tf
               if test == False:
-                print "It was a bad point "
+                individuals.success = True
+                individuals.euclid = 0
+
+                print "This individual ",individuals.indnum," has a bad waypoint given a Eucidean of Zero"
+
+
               #time.sleep(.1)
             
 

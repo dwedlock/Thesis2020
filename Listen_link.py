@@ -12,10 +12,11 @@ recording = False
 file_to_write = ""
 
 def callback(data):
-    print "Checking if I should record"
-    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-    print data.data
+    #print "Checking if I should record"
     global recording
+    rospy.loginfo(rospy.get_caller_id() + "Action %s", data.data)
+    #print data.data
+    
     if data.data == "start":
         recording = True
     if data.data == "stop":
@@ -57,10 +58,8 @@ def main():
         y = linkresult.link_state.pose.position.y
         z = linkresult.link_state.pose.position.z
         if recording == True:
-            print "recording ",recording 
-            print "file ",file_to_write
-
-
+            print "recording ",recording,"file ",file_to_write
+            
             with open(file_to_write, 'a') as csvfile:
                 writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
                 writer.writerow([x,",",y,",",z])

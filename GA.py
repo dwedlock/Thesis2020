@@ -60,8 +60,8 @@ def calc_euclid(individual):
         file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individual.indnum),(individual.gen))
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-            writer.writerow([individual.euclid])
-            writer.writerow([individual.success])
+            writer.writerow([individual.euclid],'Euclidean')
+            writer.writerow([individual.success],'Sucess')
 
 def evaluate_pop(all_ind): # recall the whole pop
     #### ENTRY POINT OF GA 
@@ -157,17 +157,17 @@ def mutate(remain_ind):
                 value = individuals.xpos[gene_to_mutate] 
                 #print "Value",value
                 ######################################################################################
-                individuals.xpos[gene_to_mutate] = random.gauss(value,1)#(value * 20.0)
+                individuals.xpos[gene_to_mutate] = random.gauss(value,0.5)#(value * 20.0)
                 #print "New Value ",individuals.xpos[gene_to_mutate]
                 #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.ypos[gene_to_mutate] 
                 #print "Value",value
-                individuals.ypos[gene_to_mutate] = random.gauss(value,1)#(value * 20.0)
+                individuals.ypos[gene_to_mutate] = random.gauss(value,0.5)#(value * 20.0)
                 #print "New Value ",individuals.ypos[gene_to_mutate]
                 #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.zpos[gene_to_mutate] 
                 #print "Value",value
-                individuals.zpos[gene_to_mutate] = random.gauss(value,1)#(value * 20.0)
+                individuals.zpos[gene_to_mutate] = random.gauss(value,0.5)#(value * 20.0)
                 #print "New Value ",individuals.zpos[gene_to_mutate]
 
         print "Finihsed Mutating"
@@ -317,7 +317,7 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     # print "Child 2 X", str(child_2x)[1:-1]
     # print "Child 2 Y", str(child_2y)[1:-1]
     # print "Child 2 Z", str(child_2z)[1:-1]
-    remain_ind.indcount = remain_ind.indcount + 1
+    
     add = Individual(remain_ind.indcount,child_1num,child_1x,child_1y,child_1z,child_1v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
@@ -326,3 +326,4 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     add = Individual(remain_ind.indcount,child_2num,child_2x,child_2y,child_2z,child_2v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
+    remain_ind.indcount = remain_ind.indcount + 1

@@ -145,20 +145,16 @@ class MoveGroupPythonIntefaceTutorial(object):
     #print self.robot.get_current_state()
     move_group.allow_looking(True)
     move_group.allow_replanning(True)
-    move_group.set_planning_time(30)
-    move_group.set_num_planning_attempts(100) #Gets ignored by RVIZ
+    move_group.set_planning_time(10)
+    move_group.set_num_planning_attempts(50) #Gets ignored by RVIZ
     move_group.set_goal_position_tolerance(0.5)
     move_group.set_goal_orientation_tolerance(1.0)
     move_group.set_goal_tolerance(0.5)
     move_group.set_goal_joint_tolerance(0.5)
-
-
-
-
     return all_close(joint_goal, current_joints, 0.01)
 
 
-  def go_to_pose_goal(self,W,X,Y,Z,V):
+  def go_to_pose_goal(self,W,X,Y,Z,V,writer):
     # Copy class variables to local variables to make the web tutorials more clear.
     move_group = self.move_group
     move_group.set_max_velocity_scaling_factor(V)
@@ -172,8 +168,17 @@ class MoveGroupPythonIntefaceTutorial(object):
     pose_goal.position.z = Z#0.4 Confirmed as UP
     move_group.set_pose_target(pose_goal)
     ## Now, we call the planner to compute the plan and execute it.
+    inst_str = "start"
+    writer.publish(inst_str) # Starts the Listener
+    writer.publish(inst_str)
+    #time.sleep(0.1)
     print "We started to move", X, Y, Z
     plan = move_group.go(wait=True)
+    inst_str = "stop"
+    writer.publish(inst_str) #stops the listener 
+    time.sleep(0.1)
+    writer.publish(inst_str)
+
     print "We finished a move", plan
     # Calling `stop()` ensures that there is no residual movement
     move_group.stop()
@@ -357,125 +362,3 @@ class MoveGroupPythonIntefaceTutorial(object):
       self.scene.add_box(box_name, box_pose, size=(10, 10, 0.01))
       #self.box_name=box_name
       time.sleep(2) # this is required to give the sim time to upload 
-        #table = False
-        #table = self.wait_for_state_update(box_is_known=True, timeout=timeout)
-        #while table == False: # this loop was to ensure the table is present Might take out later
-        #  table = (self.wait_for_state_update(box_is_known=True, timeout=timeout))
-        #  print "no table yet"
-
-
-# def main():
-  
-#   print "Python has started"
-#   tutorial = MoveGroupPythonIntefaceTutorial()
-#   print "adding a table for collisions"
-#   tutorial.add_box()
-#   print "Success adding table "
-#   time.sleep(1)
-
-#   print "============ Press `Enter` to execute joint state goal ..."
-#   raw_input()
-#   tutorial.go_to_joint_state(0.0,-0.5,0.0,0.0,0.0,0.0) # note Rads each joint 
-#   #print "============ Press `Enter` to execute a movement using a pose goal ..."
-  
-#   #raw_input()
-#   #tutorial.go_to_pose_goal(1.0,0.2,0.1,0.4) #W X Y Z
-#     #xx = 0.1
-#     #yy = 0.1
-#     #zz = 0.1
-#   loops = 0
-#   while (1):
-#       #random.seed(5)
-#       #xx = xx+0.1
-#       #y = yy+0.1
-#       #zz = zz+0.1
-#     print loops
-#     loops = loops + 1
-#     print "New Path entered"     
-#     print "Can I Home? waiting on Raw Input"
-#     raw_input()
-#     print "Should be at home position"
-#     tutorial.go_to_joint_state(0.0,-1.57,0.0,0.0,0.0,0.0) 
-#     rospy.sleep(5)
-
-#     pathlist = [0.1,0.5,0.3,0.1,0.5,0.8,0.1,0.5,1.0,0.1,0.5,1.1]
-#     cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist)
-#     print "waiting on Raw Input"
-#     raw_input()
-
-#   print "============ Exiting the Loop!"
-
-# if __name__ == '__main__':
-#   main()
-
-
-
-
-#  def attach_box(self, timeout=4):
-    # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
-#    box_name = self.box_name
-#    robot = self.robot
-#    scene = self.scene
-#    eef_link = self.eef_link
-#    group_names = self.group_names
-
-    ## BEGIN_SUB_TUTORIAL attach_object
-    ##
-    ## Attaching Objects to the Robot
-    ## ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ## Next, we will attach the box to the Panda wrist. Manipulating objects requires the
-    ## robot be able to touch them without the planning scene reporting the contact as a
-    ## collision. By adding link names to the ``touch_links`` array, we are telling the
-    ## planning scene to ignore collisions between those links and the box. For the Panda
-    ## robot, we set ``grasping_group = 'hand'``. If you are using a different robot,
-    ## you should change this value to the name of your end effector group name.
-#    grasping_group = 'hand'
-#    touch_links = robot.get_link_names(group=grasping_group)
-#    scene.attach_box(eef_link, box_name, touch_links=touch_links)
-    ## END_SUB_TUTORIAL
-
-    # We wait for the planning scene to update.
-#    return self.wait_for_state_update(box_is_attached=True, box_is_known=False, #timeout=timeout)
-
-### NOTE BELOW NOT WORKING DUE TO PLANNING CONFIG FILE 
-#  def detach_box(self, timeout=4):
-#    # Copy class variables to local variables to make the web tutorials more clear.
-#    # In practice, you should use the class variables directly unless you have a good
-#    # reason not to.
-#    box_name = self.box_name
-#    scene = self.scene
-#    eef_link = self.eef_link
-
-    ## BEGIN_SUB_TUTORIAL detach_object
-    ##
-    ## Detaching Objects from the Robot
-    ## ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ## We can also detach and remove the object from the planning scene:
-#    scene.remove_attached_object(eef_link, name=box_name)
-    ## END_SUB_TUTORIAL
-
-    # We wait for the planning scene to update.
-#    return self.wait_for_state_update(box_is_known=True, box_is_attached=False, #timeout=timeout)
-
-
-#  def remove_box(self, timeout=4):
-    # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
-#    box_name = self.box_name
-#    scene = self.scene
-
-    ## BEGIN_SUB_TUTORIAL remove_object
-    ##
-    ## Removing Objects from the Planning Scene
-    ## ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ## We can remove the box from the world.
-#    scene.remove_world_object(box_name)
-
-    ## **Note:** The object must be detached before we can remove it from the world
-    ## END_SUB_TUTORIAL
-
-    # We wait for the planning scene to update.
-#    return self.wait_for_state_update(box_is_attached=False, box_is_known=False, #timeout=timeout)
