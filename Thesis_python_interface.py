@@ -171,7 +171,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     inst_str = "start"
     writer.publish(inst_str) # Starts the Listener
     writer.publish(inst_str)
-    #time.sleep(0.1)
+    time.sleep(0.5)
     print "We started to move", X, Y, Z
     plan = move_group.go(wait=True)
     inst_str = "stop"
