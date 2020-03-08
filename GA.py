@@ -76,6 +76,11 @@ def evaluate_pop(all_ind): # recall the whole pop
         if (individuals.success == False) and (individuals.alive == False):
             individuals.euclid = 0 # ensure set to zero 
             print "Individual number",individuals.indnum," FAILED and has a euclidean of Zero ",individuals.euclid
+        file_ind = "Results/Population/totalgens.csv"
+        with open(file_ind, 'a') as csvfile:
+            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+            writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid])
+        
 
     # sorts best to worst Euclidean 
     all_ind.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
@@ -142,19 +147,19 @@ def generate_new_gen(remain_ind):
 
     for individuals in individuals_to_reproduce:
         print "Luck Individual",individuals.indnum
-        file_ind = "Results/Population/gen%s.csv" % (individual.gen)
+        file_ind = "Results/Population/gen%s.csv" % (individuals.gen)
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-            writer.writerow([individual.gen,",",'Generation'])
-            writer.writerow([individual.num_points,",",'NumberPoints'])
-            writer.writerow([individual.vmax,",",'Vmax'])
-            writer.writerow([individual.xpos,",",'Xpos'])
-            writer.writerow([individual.ypos,",",'Ypos'])
-            writer.writerow([individual.zpos,",",'Zpos'])
-            writer.writerow([individual.vmax,",",'Vmax'])
+            writer.writerow([individuals.gen,",",'Generation'])
+            writer.writerow([individuals.num_points,",",'NumberPoints'])
+            writer.writerow([individuals.vmax,",",'Vmax'])
+            writer.writerow([individuals.xpos,",",'Xpos'])
+            writer.writerow([individuals.ypos,",",'Ypos'])
+            writer.writerow([individuals.zpos,",",'Zpos'])
+            writer.writerow([individuals.vmax,",",'Vmax'])
             #writer.writerow([individual.success,",",'Sucess'])
 
-    raw_input()
+    #raw_input()
     ### Above has generated 10 Pairs of Parents, they will may repeat but Superior fitness gives a better opportunity to repopulate. 
     for  i in range (0,10):
         # generate the new individuals 
