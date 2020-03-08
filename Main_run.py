@@ -103,7 +103,7 @@ def main():
           #tutorial.go_to_joint_state(0.1,-1.57,0.1,0.1,0.1,0.1) 
           #tutorial.go_to_pose_goal(1,0.2,0.2,0.6)
           #rospy.sleep(2)
-          print "Should be at home position, all joints Zero"
+          print "Should be at home position, all joints Zero, ready for Individual", individuals.indnum
           if individuals.sim_run == False: # this line ensures we only do the new ones
             #inst_str = "Start" #%s" % rospy.get_time()
             #individuals.gen = pop.gencount
@@ -116,6 +116,7 @@ def main():
             #cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
             test = True
             for i in range(0,(len(individuals.xpos))):
+              
               individuals.success = True
               if test == True:
                 return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i],writer)

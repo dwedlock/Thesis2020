@@ -73,7 +73,8 @@ def evaluate_pop(all_ind): # recall the whole pop
         if (individuals.success == True) and (individuals.alive == True): # plan returned without error and we ran the simulation
             calc_euclid(individuals)
             print "Individual number",individuals.indnum," has a euclidean of ",individuals.euclid
-        if (individuals.success == False) and (individuals.alive == True):
+        if (individuals.success == False) and (individuals.alive == False):
+            individuals.euclid = 0 # ensure set to zero 
             print "Individual number",individuals.indnum," FAILED and has a euclidean of Zero ",individuals.euclid
 
     # sorts best to worst Euclidean 
@@ -86,10 +87,22 @@ def evaluate_pop(all_ind): # recall the whole pop
         all_ind.current_ind_instances.pop(0) # remove the individual from the current list 
     print "New pop of X Elites with X Weaker removed "    
     #print_all_current(all_ind)
+    for individuals in all_ind.current_ind_instances:
+        print "Surviving individual", individuals.indnum, "Euclid", individuals.euclid
     generate_new_gen(all_ind)
 
 def generate_new_gen(remain_ind):
     # recall remain_ind is the entire population 
+    numpoints = [2,9]
+    xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
+    xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
+    ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
+    ymax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]#[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+    zmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+    zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
+    vmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+    vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+
     #remain_ind.current_ind_instances holds X number of Elites 
     remain_ind.gencount = remain_ind.gencount + 1
     print "The new Generation number is ", remain_ind.gencount
@@ -106,14 +119,20 @@ def generate_new_gen(remain_ind):
         print i, "evaluating"
         #Twice so we end up with a list of 20 (10 pairs to create 20 children) from out best 10 
         choice = random.choice(remain_ind.current_ind_instances)
-        individuals_to_reproduce.append(choice)
+        if choice.euclid == 0:
+            print "This was a bad choice because its euclid was zero, generate a new random ind"        
+            remain_ind.generate_inds(1,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,remain_ind.gencount)
+        else: individuals_to_reproduce.append(choice)
         choice_two = random.choice(remain_ind.current_ind_instances)
         #max_loop = 0
-        while choice_two == choice:
-            print "woops we had to choose again"
+        while choice_two == choice: # ensures we dont have double ups
+            print "woops we had to choose again because we doubled up"
             choice_two = random.choice(remain_ind.current_ind_instances)
             #max_loop = max_loop + 1
-        individuals_to_reproduce.append(choice_two)
+        if choice_two.euclid == 0:
+            print "This was a bad choice_two because its euclid was zero, generate a new random ind"   
+            remain_ind.generate_inds(1,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,remain_ind.gencount)
+        else: individuals_to_reproduce.append(choice_two)
         if i < (worst_to_remove-2): # to make sure we dont end up with just one value in the list and therefore self replicating
             remain_ind.current_ind_instances.pop(0)
 
@@ -123,6 +142,7 @@ def generate_new_gen(remain_ind):
 
     for individuals in individuals_to_reproduce:
         print "Luck Individual",individuals.indnum
+    raw_input()
     ### Above has generated 10 Pairs of Parents, they will may repeat but Superior fitness gives a better opportunity to repopulate. 
     for  i in range (0,10):
         # generate the new individuals 
@@ -155,25 +175,25 @@ def mutate(remain_ind):
 
                 #print "In mutating wp"
                 gene_to_mutate = random.randint(0,max_wp_length-1)
-
+                sigma = 0.1
                 #print "Gene",gene_to_mutate
                 value = individuals.xpos[gene_to_mutate] 
                 #print "Value",value
                 ######################################################################################
-                individuals.xpos[gene_to_mutate] = random.gauss(value,0.5)#(value * 20.0)
+                individuals.xpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
                 #print "New Value ",individuals.xpos[gene_to_mutate]
                 #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.ypos[gene_to_mutate] 
                 #print "Value",value
-                individuals.ypos[gene_to_mutate] = random.gauss(value,0.5)#(value * 20.0)
+                individuals.ypos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
                 #print "New Value ",individuals.ypos[gene_to_mutate]
                 #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.zpos[gene_to_mutate] 
                 #print "Value",value
-                individuals.zpos[gene_to_mutate] = random.gauss(value,0.5)#(value * 20.0)
+                individuals.zpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
                 #print "New Value ",individuals.zpos[gene_to_mutate]
 
-        print "Finihsed Mutating"
+        print "Finished Mutating"
         individuals.printIndnum()
         #raw_input()
 
@@ -197,6 +217,8 @@ def generate_new_children(remain_ind,parent_1, parent_2):
         # current_ind_instances = []
         # indinstanceshistory = []
     # grab the lowest number of point 
+
+    # check to make sure parent_1 and parent_2 
 
     crossover_point = 0
     equal = False
