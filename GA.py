@@ -108,7 +108,7 @@ def generate_new_gen(remain_ind):
     print "The new Generation number is ", remain_ind.gencount
     worst_to_remove = ((remain_ind.numberinds)/2)
     newnum = 20 # this is how many new individuals to generate
-    numpoints = []
+    #numpoints = []
     sortnumpoints = [] # list if two min max
     for individuals in remain_ind.current_ind_instances:
         print "Chosen Alive Individuals",individuals.indnum
@@ -142,6 +142,18 @@ def generate_new_gen(remain_ind):
 
     for individuals in individuals_to_reproduce:
         print "Luck Individual",individuals.indnum
+        file_ind = "Results/Population/gen%s.csv" % (individual.gen)
+        with open(file_ind, 'a') as csvfile:
+            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+            writer.writerow([individual.gen,",",'Generation'])
+            writer.writerow([individual.num_points,",",'NumberPoints'])
+            writer.writerow([individual.vmax,",",'Vmax'])
+            writer.writerow([individual.xpos,",",'Xpos'])
+            writer.writerow([individual.ypos,",",'Ypos'])
+            writer.writerow([individual.zpos,",",'Zpos'])
+            writer.writerow([individual.vmax,",",'Vmax'])
+            #writer.writerow([individual.success,",",'Sucess'])
+
     raw_input()
     ### Above has generated 10 Pairs of Parents, they will may repeat but Superior fitness gives a better opportunity to repopulate. 
     for  i in range (0,10):
