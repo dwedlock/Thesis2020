@@ -71,8 +71,11 @@ def evaluate_pop(all_ind): # recall the whole pop
     #Generate the Eucideans from two csv files
     for individuals in all_ind.current_ind_instances:
         if (individuals.success == True) and (individuals.alive == True): # plan returned without error and we ran the simulation
-            calc_euclid(individuals)
-            print "Individual number",individuals.indnum," has a euclidean of ",individuals.euclid
+            if (individuals.calc_euclid == False):
+                # This is to ensure we never call twice or add more to a euclidean that is already calculated
+                calc_euclid(individuals)
+                print "Individual number",individuals.indnum," has a euclidean of ",individuals.euclid
+                individuals.calc_euclid == True
         if (individuals.success == False) and (individuals.alive == False):
             individuals.euclid = 0 # ensure set to zero 
             print "Individual number",individuals.indnum," FAILED and has a euclidean of Zero ",individuals.euclid
@@ -214,7 +217,33 @@ def mutate(remain_ind):
         individuals.printIndnum()
         #raw_input()
 
+def check_valid_waypoints(remain_ind): 
+    # this is passed a list of current Individuals
+    max_reach = 1.3
+    for individuals in remain_ind:
+        for i in range (0 , (len(individuals.xpos))):
+            x_check = individuals.xpos[i]
+            y_check = individuals.ypos[i]
+            z_check = individuals.zpos[i]
 
+            p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
+            p2 = (0.0,0.0,0.0)
+            #print p2
+            euclid_check = distance.euclidean(p2,p1)
+            
+            while (euclid_check > max_reach):
+                print euclid_check,"Euclidean Checked as was bad"
+                individuals.xpos[i] = (individuals.xpos[i]* 0.9)
+                individuals.ypos[i] = (individuals.ypos[i]* 0.9)
+                individuals.zpos[i] = (individuals.ypos[i]* 0.9)
+                x_check = individuals.xpos[i]
+                y_check = individuals.ypos[i]
+                z_check = individuals.zpos[i]
+                p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
+                #p2 = (0.0,0.0,0.0)
+                #print p2
+                euclid_check = distance.euclidean(p2,p1)
+            print euclid_check,"New Euclidean Accepted For", individuals.indnum
 
 
 

@@ -57,6 +57,7 @@ def main():
     # print the whole population 
     pop.gen_wp()
 
+    check_valid_waypoints(pop.current_ind_instances)
     print "adding a table for collisions"
     #tutorial.add_box()
     print "Success adding table "

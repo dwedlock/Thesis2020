@@ -19,6 +19,7 @@ class Individual:
         self.gen = gen
         self.success = False
         self.mutated = False
+        self.calc_euclid = False
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):
