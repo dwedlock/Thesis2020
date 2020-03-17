@@ -20,6 +20,7 @@ class Individual:
         self.sim_success = False
         self.real_success = False
         self.parent_of_gen = 0 
+        self.plan_1 = []
 
         self.mutated = False
         self.calc_euclid = False

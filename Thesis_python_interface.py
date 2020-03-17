@@ -108,7 +108,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     move_group.set_goal_joint_tolerance(0.5)
     return all_close(joint_goal, current_joints, 0.01)
 
-  def go_to_pose_goal(self,W,X,Y,Z,V,writer):
+  def go_to_pose_goal(self,W,X,Y,Z,V,writer,ind):
     # Copy class variables to local variables to make the web tutorials more clear.
     move_group = self.move_group
     move_group.set_max_velocity_scaling_factor(V)
@@ -127,7 +127,10 @@ class MoveGroupPythonIntefaceTutorial(object):
     writer.publish(inst_str)
     time.sleep(0.5)
     print "We started to move", X, Y, Z
+    plan_1 = move_group.plan()
+    ind.plan_1.append(plan_1)
     plan = move_group.go(wait=True)
+    print plan_1
     inst_str = "stop"
     writer.publish(inst_str) #stops the listener 
     time.sleep(0.1)
