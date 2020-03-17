@@ -46,6 +46,7 @@ def main():
     filestring.publish(file_str)
     print "Generating a population"
     pop = Population(20)
+    pop.gencount = pop.gencount + 1
     grav = GravityControl()
     grav.init_values()
     grav.change_gravity(0.0,0.0,-9.8)
@@ -60,12 +61,13 @@ def main():
     raw_input()
     tutorial.go_to_joint_state(0.0,-0.5,0.0,0.0,0.0,0.0) # note Rads each joint 
     while (1):
-        pop.gencount = pop.gencount + 1
+        
         grav.change_gravity(0.0,0.0,-9.8)
         run_simulation(tutorial,pop,pop.gencount,filestring,writer)
         grav.change_gravity(0.0,0.0,-11.8)
         run_real(tutorial,pop,pop.gencount,filestring,writer)
         evaluate_pop(pop) # This is a GA function call to evauate this population before the next generatio   
+        pop.gencount = pop.gencount + 1
 
     print "============ Exiting the Loop!"
 

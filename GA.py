@@ -108,7 +108,7 @@ def evaluate_pop(population): # recall the whole pop
             #writer.writerow([individual.euclid,",",'Euclidean'])
             writer.writerow([individual.sim_success,",",'Sim Sucess'])
             writer.writerow([individual.real_success,",",'Real Sucess'])
-            riter.writerow([individual.parent_of_gen,",",'Parent of Generation'])
+            writer.writerow([individual.parent_of_gen,",",'Parent of Generation'])
 
     generate_new_gen(population)
 
