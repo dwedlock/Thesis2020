@@ -122,7 +122,7 @@ def run_real(tutorial,pop,loops,filestring,writer):
     for i in range(0,(len(individuals.xpos))):
       individuals.real_success = True
       if test == True:
-        return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i],writer)
+        return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i],writer,individuals)
       if test == True:
         test = return_tf
       if test == False:
