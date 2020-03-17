@@ -18,15 +18,8 @@ from gazebo_msgs.msg import LinkState
 #import multiprocessing # this was attached to the old recording process
 #from multiprocessing import Process , Queue # this was attached to the old recording process
 from GA import *
-
 #Physics 
-from gazebo_msgs.msg import ODEPhysics
-from gazebo_msgs.srv import SetPhysicsProperties, SetPhysicsPropertiesRequest
-from std_msgs.msg import Float64    
-from geometry_msgs.msg import Vector3
-from std_srvs.srv import Empty
-
-
+from gravity import GravityControl
 
 def main():
     print "Python has started"
@@ -53,6 +46,10 @@ def main():
     filestring.publish(file_str)
     print "Generating a population"
     pop = Population(20)
+    grav = GravityControl()
+    grav.init_values()
+    grav.change_gravity(0.0,0.0,-9.8)
+
     generation = pop.gencount
     pop.generate_inds(pop.numberinds,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,generation)
     pop.gen_wp()
@@ -62,17 +59,15 @@ def main():
     print "============ Please ensure the Recorder is started and then Press `Enter` to execute joint state goal ..."
     raw_input()
     tutorial.go_to_joint_state(0.0,-0.5,0.0,0.0,0.0,0.0) # note Rads each joint 
-    loops = 0
-    q = Queue()
-    q2 = Queue()
     while (1):
         pop.gencount = pop.gencount + 1
+        grav.change_gravity(0.0,0.0,-9.8)
         run_simulation(tutorial,pop,pop.gencount,filestring,writer)
+        grav.change_gravity(0.0,0.0,-11.8)
         run_real(tutorial,pop,pop.gencount,filestring,writer)
         evaluate_pop(pop) # This is a GA function call to evauate this population before the next generatio   
 
     print "============ Exiting the Loop!"
-
 
 def run_simulation(tutorial,pop,loops,filestring,writer):
   for individuals in pop.current_ind_instances:

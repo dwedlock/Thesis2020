@@ -8,7 +8,7 @@ from geometry_msgs.msg import Vector3
 from std_srvs.srv import Empty
 
 """
-user:/opt/ros/indigo/share/gazebo_msgs/srv$ cat SetPhysicsProperties.srv                                                                                                  
+#user:/opt/ros/indigo/share/gazebo_msgs/srv$ cat SetPhysicsProperties.srv                                                                                                  
 # sets pose and twist of a link.  All children link poses/twists of the URDF tree will be updated accordingly                                                             
 float64 time_step                  # dt in seconds                                                                                                                        
 float64 max_update_rate            # throttle maximum physics update rate                                                                                                 
@@ -22,13 +22,10 @@ string status_message              # comments if available
 class GravityControl(object):
     def __init__(self):
         
-        
+        print "Starting Gravity Service "
         self.unpause = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
         self.pause = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
-        self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_simulation', Empty)
-        
-        
-        
+        #Bad for Sim#self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_simulation', Empty)    
         service_name = '/gazebo/set_physics_properties'
         rospy.loginfo("Waiting for service "+str(service_name))
         rospy.wait_for_service(service_name)
@@ -37,17 +34,12 @@ class GravityControl(object):
         self.set_physics = rospy.ServiceProxy(service_name, SetPhysicsProperties)
 
         self.init_values()
+        print "Init Grav Sucessful"
     
     def init_values(self):
         
-        
-        rospy.wait_for_service('/gazebo/reset_simulation')
-        try:
-            #reset_proxy.call()
-            self.reset_proxy()
-        except rospy.ServiceException, e:
-            print ("/gazebo/reset_simulation service call failed")
-        
+        print "Starting init Grav"
+      
         self._time_step = Float64(0.001)
         self._max_update_rate = Float64(1000.0)
         
@@ -76,6 +68,7 @@ class GravityControl(object):
         rospy.wait_for_service('/gazebo/pause_physics')
         try:
             self.pause()
+            print "Pause"
         except rospy.ServiceException, e:
             print ("/gazebo/pause_physics service call failed")
         
@@ -96,6 +89,7 @@ class GravityControl(object):
         rospy.wait_for_service('/gazebo/unpause_physics')
         try:
             self.unpause()
+            print "Unpause"
         except rospy.ServiceException, e:
             print ("/gazebo/unpause_physics service call failed")
         
@@ -233,7 +227,7 @@ def sequence():
     
    
    
-if __name__ == '__main__':
-    sequence()
+#if __name__ == '__main__':
+#    sequence()
     
     
