@@ -127,10 +127,13 @@ class MoveGroupPythonIntefaceTutorial(object):
     writer.publish(inst_str)
     time.sleep(0.5)
     print "We started to move", X, Y, Z
-    plan_1 = move_group.plan()
-    ind.plan_1.append(plan_1)
+    
+    planner = move_group.plan()
+    print planner
+    ind.plan_1.append(planner)
+    #move_group.plan = ind.plan_1 # THis line will be used later
     plan = move_group.go(wait=True)
-    print plan_1
+    #print plan_1
     inst_str = "stop"
     writer.publish(inst_str) #stops the listener 
     time.sleep(0.1)
