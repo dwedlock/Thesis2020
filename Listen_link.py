@@ -13,11 +13,7 @@ recording = False
 file_to_write = ""
 
 def callback(data):
-    #print "Checking if I should record"
     global recording
-    #rospy.loginfo(rospy.get_caller_id() + "Action %s", data.data)
-    #print data.data
-    
     if data.data == "start":
         recording = True
     if data.data == "stop":
@@ -32,8 +28,6 @@ def callback_file(data_file):
 
 def call_feedback(data_feedback):
     print "Im being called"
-    #rospy.loginfo(rospy.get_caller_id() + "getModelState %s", data_feedback)
-    #print data_feedback
 
 def main():
     global recording
@@ -41,37 +35,21 @@ def main():
     global last_check_move
     rospy.init_node('listener', anonymous=True)
     rospy.wait_for_service('/gazebo/get_model_state')
-    
-        #while not rospy.is_shutdown():
     print "Im starting the recording loop"
-    #rate = rospy.Rate(10) # 10hz
     get_link_srv = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
     link = GetLinkStateRequest()
     link.link_name = 'wrist_3_link'
-
     get_model_srv = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
     model = GetModelStateRequest()
     model.model_name = 'robot'
-    #rospy.init_node('listener', anonymous=True)
 
     while True:
-            #hello_str = "hello world %s" % rospy.get_time()
-            #rospy.loginfo(hello_str)
-            #pub.publish(hello_str)
-        #rospy.Subscriber("status",String,call_feedback)
 
         rospy.Subscriber("writer", String, callback)
-        #'filestring'
         rospy.Subscriber("filestring", String, callback_file)
-        
-        
-        #print "i Received back ", data_return
-        #print "Looping"
         time.sleep(.1) 
         linkresult = get_link_srv(link) # we use for the link
         modelresult = get_model_srv(model) # robot will not move much in this example 
-        #print modelresult.pose.position.x
-        # These values are for each timestep writen to each row
         x = linkresult.link_state.pose.position.x
         this_check_move = x
         we_moved = False

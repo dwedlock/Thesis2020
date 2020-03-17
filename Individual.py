@@ -1,5 +1,4 @@
 
-
 from copy import deepcopy
 import csv
 
@@ -8,6 +7,7 @@ class Individual:
     def __init__(self,indnum,number_points,xpos,ypos,zpos,vmax,gen):
         self.alive = True
         self.sim_run = False
+        self.real_run = False
         self.indnum = indnum
         self.xpos = deepcopy(xpos)
         self.ypos = deepcopy(ypos)
@@ -17,7 +17,10 @@ class Individual:
         self.waypoints = []
         self.euclid = 0 #
         self.gen = gen
-        self.success = False
+        self.sim_success = False
+        self.real_success = False
+        self.parent_of_gen = 0 
+
         self.mutated = False
         self.calc_euclid = False
         print "Init Ind", indnum, "completed"
@@ -47,16 +50,11 @@ class Individual:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             writer.writerow([self.gen,",",'Generation'])
             writer.writerow([self.indnum,",",'Individual Number'])
-            writer.writerow([self.num_points,",",'Number of points'])
-            #for val in self.xpos:
-            
+            writer.writerow([self.num_points,",",'Number of points'])         
             writer.writerow(self.xpos)
             writer.writerow(self.ypos)
             writer.writerow(self.zpos)
             writer.writerow(self.vmax)            
-
-        #print "My Waypoints"
-        #print self.waypoints
 
     def returnnumpoints(self):
         return self.num_points

@@ -9,21 +9,13 @@ from GA import *
 
 class Population:
     indcount = 1
-    gencount = 1
+    gencount = 0
     current_ind_instances = []
     indinstanceshistory = []
     def __init__(self,numberinds):
-        
-        
         self.numberinds = numberinds
         self.numbpoints = random.randint(1,10)
-        #self.num_reproduce = numberinds
-        #self.
-        
-        print "Init worked"
-        
-
-
+        print "Init Population worked"
 
     def generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen):
         print "Generating individuals"
@@ -34,16 +26,9 @@ class Population:
             z_pos = []
             v_max = []
             number_points = random.randint(numpoints[0],numpoints[1])
-            #vals = [5,15,20,25,30,40,45,100,200,300,50]
-            #random.seed(random.choice(vals))
-            #random.shuffle(vals)
             key = random.SystemRandom()
             seed_key = key.randint(0,sys.maxint)
-            #loop = 0
-            #print "numbpoints", self.numbpoints
             for i in range (0,number_points):
-                #print "Loop",loop
-                #loop = loop + 1
                 random.seed(seed_key)
                 seed_key = key.randint(0,sys.maxint)
                 #random.shuffle(vals)
@@ -60,20 +45,10 @@ class Population:
                 seed_key = key.randint(0,sys.maxint)
                 #random.shuffle(vals)
                 v_max.append(random.uniform(vmin[i],vmax[i])) 
-
-                #self.numpoints = random.randint(1,5)
-            #print "numbpoints", self.numbpoints
-            #print "Xpos", x_pos
-            #print "ypos", y_pos
-
             add = Individual(Population.indcount,number_points,x_pos,y_pos,z_pos,v_max,gen)
             Population.current_ind_instances.append(add)
             Population.indinstanceshistory.append(add)
             Population.indcount = Population.indcount + 1
-            #for each individual write a record
-
-
-
 
     def printpop(self):
         ()
@@ -81,14 +56,6 @@ class Population:
     
     def gen_wp(self):
         for individuals in Population.current_ind_instances:
-            #individuals.printIndnum()
-            #print "Generating the waypoints for the initial population"
             individuals.generate_wp()
-
-
-
-
-
-        #self.me.printIndnum()
 
 

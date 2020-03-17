@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-## To use the Python MoveIt interfaces, we will import the `moveit_commander`_ namespace.
-## This namespace provides us with a `MoveGroupCommander`_ class, a `PlanningSceneInterface`_ class,
-## and a `RobotCommander`_ class. More on these below. We also import `rospy`_ and some messages that we will use:
-##
 
 import sys
 import time
@@ -19,16 +15,6 @@ from gazebo_msgs.srv import GetModelState, GetModelStateRequest, GetLinkState
 from gazebo_msgs.msg import LinkState
 from multiprocessing import Process
 import os
-# from compas.datastructures import Mesh
-# import compas_fab
-# from compas_fab.backends import RosClient
-# from compas_fab.robots import CollisionMesh
-# from compas_fab.robots import PlanningScene
-# from compas_fab.robots.ur5 import Robot
-# from compas.geometry import Box
-
-
-## END_SUB_TUTORIAL
 
 
 def all_close(goal, actual, tolerance):
@@ -58,46 +44,22 @@ class MoveGroupPythonIntefaceTutorial(object):
   """MoveGroupPythonIntefaceTutorial"""
   def __init__(self):
     super(MoveGroupPythonIntefaceTutorial, self).__init__()
-    print "Davids Trials of Code for UR10 Arm Control"
-
-     ## First initialize `moveit_commander`_ and a `rospy`_ node:
+    print "UR10 Arm Control based upon UR10 Joint limited Moveit Controller"
+     ## initialize `moveit_commander`_ and a `rospy`_ node:
     moveit_commander.roscpp_initialize(sys.argv)
     rospy.init_node('move_group_python_interface_tutorial', anonymous=True)
-    
-    ## Instantiate a `RobotCommander`_ object. Provides information such as the robot's
-    ## kinematic model and the robot's current joint states
     robot = moveit_commander.RobotCommander()
-    ## Instantiate a `PlanningSceneInterface`_ object.  This provides a remote interface
-    ## for getting, setting, and updating the robot's internal understanding of the
-    ## surrounding world:
     scene = moveit_commander.PlanningSceneInterface()
-
     group_name = "manipulator"#"ur10" #was panda_arm This comes from universal_robot/ur10_moveit_config/config
     move_group = moveit_commander.MoveGroupCommander(group_name)
-
-    ## Create a `DisplayTrajectory`_ ROS publisher which is used to display
-    ## trajectories in Rviz:
     display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
                                                    moveit_msgs.msg.DisplayTrajectory,
                                                    queue_size=20)
 
     planning_frame = move_group.get_planning_frame()
-    print "DW============ Planning frame: %s" % planning_frame
-
-    # We can also print the name of the end-effector link for this group:
     eef_link = move_group.get_end_effector_link()
-    print "DW============ End effector link: %s" % eef_link
-
-    # We can get a list of all the groups in the robot:
     group_names = robot.get_group_names()
-    print "DW============ Available Planning Groups:", robot.get_group_names()
-
-    # Sometimes for debugging it is useful to print the entire state of the
-    # robot:
-    print "DW============ Printing robot state"
-    print robot.get_current_state()
-    print ""
-
+    #Add the table to generate collisions
     box_pose = geometry_msgs.msg.PoseStamped()
     box_pose.header.frame_id = robot.get_planning_frame()
     box_pose.pose.orientation.w = 1.0
@@ -107,11 +69,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     box_name = "box"
     time.sleep(2) # this is required to give the sim time to
     scene.add_box(box_name, box_pose, size=(10, 10, 0.01))
-    #self.box_name=box_name
     time.sleep(2) # this is required to give the sim time to upload 
-    ## END_SUB_TUTORIAL
-
-    # Misc variables
     self.box_name = ''
     self.robot = robot
     self.scene = scene
@@ -121,9 +79,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     self.eef_link = eef_link
     self.group_names = group_names
 
-
   def go_to_joint_state(self,zero,one,two,three,four,five):
-
     # NOTE Danger This joint state controller does no planning and will operate to collision
     move_group = self.move_group
     joint_goal = move_group.get_current_joint_values()
@@ -138,7 +94,6 @@ class MoveGroupPythonIntefaceTutorial(object):
     move_group.go(joint_goal, wait=True)
     # Calling ``stop()`` ensures that there is no residual movement
     move_group.stop()
-
     # For testing:
     current_joints = move_group.get_current_joint_values()
     #print "Robot Currently at"
@@ -152,7 +107,6 @@ class MoveGroupPythonIntefaceTutorial(object):
     move_group.set_goal_tolerance(0.5)
     move_group.set_goal_joint_tolerance(0.5)
     return all_close(joint_goal, current_joints, 0.01)
-
 
   def go_to_pose_goal(self,W,X,Y,Z,V,writer):
     # Copy class variables to local variables to make the web tutorials more clear.
@@ -178,7 +132,6 @@ class MoveGroupPythonIntefaceTutorial(object):
     writer.publish(inst_str) #stops the listener 
     time.sleep(0.1)
     writer.publish(inst_str)
-
     print "We finished a move", plan
     # Calling `stop()` ensures that there is no residual movement
     move_group.stop()
@@ -189,64 +142,37 @@ class MoveGroupPythonIntefaceTutorial(object):
     #all_close(pose_goal, current_pose, 0.01)
     return plan
 
-
   def plan_cartesian_path(self,coords,ind,writer,scale=1):
-    #Can access the individual that we are acting upon below
-    #ind.printIndnum()
-    #print "Im in Planning"
-    #print "Note I need x y z and velocity "
+    #Note, while the below code operates there is a random intermitent error that causes the controller to fail
     listcoords = [] #ensure empty
     listcoords = copy.deepcopy(coords)# can be any length in x y z x y z format
-    #print "where are we going"
-    #print listcoords
     move_group = self.move_group
     #move_group.stop()
     move_group.clear_pose_targets() # ensure no pose targets
-
     waypoints = [] # ensure empty 
     wpose = move_group.get_current_pose().pose
-
     move_group.set_max_velocity_scaling_factor(0.1)
     move_group.set_max_acceleration_scaling_factor(0.1)
     move_group.set_start_state_to_current_state()
-
     vel = []
 
-
     while listcoords > 0:
-      #print listcoords[0]
-      
       if len(listcoords) != 0:
-
-        
-        #print "I had a list"
-        #print listcoords
         wpose.position.x = listcoords[0]  # First move up (z)
         listcoords.pop(0)
-        #print listcoords
         wpose.position.y = listcoords[0]  # First move up (z)
         listcoords.pop(0)
-        #print listcoords
         wpose.position.z = listcoords[0]  # and sideways (y)
         listcoords.pop(0)
         vel.append(copy.deepcopy(listcoords[0]))
         listcoords.pop(0)
-        #print listcoords
         waypoints.append(copy.deepcopy(wpose))
       else:
         #print "Either at end of list... or out of scope"
         break
-    #print "Way points"
-    #print waypoints
-    
-    #plan = -1
-    #fraction = .1
     move_group.clear_pose_targets()
     move_group.stop()
-    #current_pose = move_group.get_current_pose().pose
     time.sleep(1)
-    ##############################################################
-    print "planning for individual", ind.indnum
     (plan, fraction) = move_group.compute_cartesian_path(
                                         waypoints,   # waypoints to follow
                                         0.01,        # eef_step # Dear David, leave this alone
@@ -257,14 +183,12 @@ class MoveGroupPythonIntefaceTutorial(object):
     print "timer finished, planner should finihsed, fraction is ", fraction
     time.sleep(2) # give other process time to start
     inst_str = "start"
-  
     move_group.stop()
     writer.publish(inst_str) # Starts the Listener
     time.sleep(0.2)# this sleep ensures we pick it up
     writer.publish(inst_str)
     time.sleep(0.2)
     if plan != -1 and fraction > 0.1:
-      ######################################################################################
       print "We have a good plan "
       move_group.execute(plan, wait=True)
       ind.success = True 
@@ -272,82 +196,50 @@ class MoveGroupPythonIntefaceTutorial(object):
       print "Plan failure -1 returned, this was a bad plan"
       ind.sim_run = True
       ind.success = False
-
-
     time.sleep(0.2)
     inst_str = "stop"
     writer.publish(inst_str) #stops the listener 
     time.sleep(1)
     writer.publish(inst_str) #stops the listener 
     print "Finish Execute Stopped Recording "
-    #print "Ive executed the plan"
-    #move_group.clear_pose_target()
-    #move_group.clear_pose_targets()
     current_pose = self.move_group.get_current_pose().pose
     time.sleep(1)
     return plan, fraction
 
-
-
   def display_trajectory(self, plan):
     print "Im displaying a trajectory " 
-    # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
-
     robot = self.robot
     display_trajectory_publisher = self.display_trajectory_publisher
     display_trajectory = moveit_msgs.msg.DisplayTrajectory()
     display_trajectory.trajectory_start = robot.get_current_state()
     display_trajectory.trajectory.append(plan)
-    # Publish
     display_trajectory_publisher.publish(display_trajectory)
     print "finishing a trajectory "
     rospy.sleep(5)
 
 
   def execute_plan(self, plan):
-    # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
-    print "Im executing a plan EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-    #print plan
     move_group = self.move_group
     move_group.execute(plan, wait=True)
     print "Ive executed the plan"
-    #move_group.clear_pose_targets()
-    #current_pose = self.move_group.get_current_pose().pose
-    print "I have cleared old targets and updated poses"
     rospy.sleep(5)
 
 
   def wait_for_state_update(self, box_is_known=False, box_is_attached=False, timeout=4):
     # Copy class variables to local variables to make the web tutorials more clear.
-    # In practice, you should use the class variables directly unless you have a good
-    # reason not to.
     box_name = self.box_name
     scene = self.scene
-
     start = rospy.get_time()
     seconds = rospy.get_time()
     while (seconds - start < timeout) and not rospy.is_shutdown():
       # Test if the box is in attached objects
       attached_objects = scene.get_attached_objects([box_name])
       is_attached = len(attached_objects.keys()) > 0
-
-      # Test if the box is in the scene.
-      # Note that attaching the box will remove it from known_objects
       is_known = box_name in scene.get_known_object_names()
-
-      # Test if we are in the expected state
       if (box_is_attached == is_attached) and (box_is_known == is_known):
         return True
-
-      # Sleep so that we give other threads time on the processor
       rospy.sleep(0.1)
       seconds = rospy.get_time()
-
-    # If we exited the while loop without returning then we timed out
     return False
  
   def add_box(self, timeout=10):
@@ -360,5 +252,4 @@ class MoveGroupPythonIntefaceTutorial(object):
       box_name = "box"
       time.sleep(2) # this is required to give the sim time to
       self.scene.add_box(box_name, box_pose, size=(10, 10, 0.01))
-      #self.box_name=box_name
       time.sleep(2) # this is required to give the sim time to upload 

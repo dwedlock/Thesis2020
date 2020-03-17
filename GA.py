@@ -7,23 +7,22 @@ from scipy.spatial import distance
 import random
 from Individual import Individual
 
-def print_all_current(all_ind): # passed population
+def print_all_current(population): # passed population
 
-    for individuals in all_ind.current_ind_instances:
+    for individuals in population.current_ind_instances:
         print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid
 
-def print_all_current(all_ind): # passed population
+def print_all_current(population): # passed population
     print "Entire History of Individuals in the order of their creation"
-
-    for individuals in all_ind.indinstanceshistory:
+    for individuals in population.indinstanceshistory:
         print "Sorted Individual by Euclid", individuals.indnum,": Euclidean Score " ,individuals.euclid , "Generation ", Individuals.gen
-
 
 def calc_euclid(individual):
     file_str = "Results/Sim/ind%sgen%s.csv" % ((individual.indnum), (individual.gen))
+
     print "file String looks like",file_str
     #currently zeros, will be real data 
-    other_file_str = "Results/Real/allZero.csv" 
+    other_file_str = "Results/Real/ind%sgen%s.csv" % ((individual.indnum), (individual.gen))
     print "Opening file to evaluate",file_str
 
 
@@ -33,26 +32,31 @@ def calc_euclid(individual):
         print "list Method"
         # Simulation data 
         xyz = list(izip(*csvreader1))
-        valsX = xyz[0] # Zero all X 
-        valsY = xyz[1] # Zero all X 
-        valsZ = xyz[2] # Zero all X 
+        valsX = xyz[0] # sim x
+        valsY = xyz[1] # sim Y 
+        valsZ = xyz[2] # sim z 
         #Will be real data currently zeros
-        zero = list(izip(*csvreader2))
-        compX = zero[0] # careful to change later 
-        compY = zero[0]
-        compZ = zero[0]
+        realxyz = list(izip(*csvreader2))
+        compX = realxyz[0] # real x
+        compY = realxyz[1] # real y
+        compZ = realxyz[2] # real z 
+        lenR = len(valsX)
+        lenS = len(compX)
+        shorter = 0
+        if lenR > lenS:
+            shorter = lenS
+        else:
+            shorter = lenR
+        for i in range(0,shorter):
+            xS = float(valsX[i])
+            yS = float(valsY[i])
+            zS = float(valsZ[i])
+            xR = float(compX[i])
+            yR = float(compY[i])
+            zR = float(compZ[i])
 
-        for i in range(len(valsX)):
-            #print(colors[i])
-            #print "NUmbers look like"
-            #print valsX[i]
-            #print valsY[i]
-            #print valsZ[i]
-            x = float(valsX[i])
-            y = float(valsY[i])
-            z = float(valsZ[i])
-            p1 = (x,y,z)#(float(valsZ[i])))
-            p2 = (0.0,0.0,0.0)
+            p1 = (xS,yS,zS)#(float(valsZ[i])))
+            p2 = (xR,yR,zR)
             #print p2
             individual.euclid = individual.euclid + distance.euclidean(p1,p2)
         print "Euclidean Composite from 0,0,0 to every point at 10hz recording frequency", individual.euclid
@@ -61,43 +65,52 @@ def calc_euclid(individual):
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             writer.writerow([individual.euclid,",",'Euclidean'])
-            writer.writerow([individual.success,",",'Sucess'])
+            writer.writerow([individual.sim_success,",",'Sim Sucess'])
+            writer.writerow([individual.real_success,",",'Real Sucess'])
 
-def evaluate_pop(all_ind): # recall the whole pop
-    #### ENTRY POINT OF GA 
-    ### note all_ind is the entire population, all individuals ever created
+
+def evaluate_pop(population): # recall the whole pop
+    #### ENTRY POINT OF GA ###############
+    ### note population is the entire population, all individuals ever created
     ## We sort them into generations with a gen number 
-    worst_to_remove = ((all_ind.numberinds)/2)
+    worst_to_remove = ((population.numberinds)/2)
     #Generate the Eucideans from two csv files
-    for individuals in all_ind.current_ind_instances:
-        if (individuals.success == True) and (individuals.alive == True): # plan returned without error and we ran the simulation
+    for individuals in population.current_ind_instances:
+        if (individuals.sim_success == True) and (individuals.alive == True): # plan returned without error and we ran the simulation
             if (individuals.calc_euclid == False):
                 # This is to ensure we never call twice or add more to a euclidean that is already calculated
                 calc_euclid(individuals)
                 print "Individual number",individuals.indnum," has a euclidean of ",individuals.euclid
                 individuals.calc_euclid == True
-        if (individuals.success == False) and (individuals.alive == False):
+        if (individuals.sim_success == False) and (individuals.alive == False):
             individuals.euclid = 0 # ensure set to zero 
             print "Individual number",individuals.indnum," FAILED and has a euclidean of Zero ",individuals.euclid
         file_ind = "Results/Population/totalgens.csv"
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid])
-        
-
     # sorts best to worst Euclidean 
-    all_ind.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
+    population.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
 
     for i in range(0,worst_to_remove):# kill bottom half NOTE must be less than pop number of crash
         print "popping an ind"
-        topop = all_ind.current_ind_instances[i]
+        topop = population.current_ind_instances[i]
         topop.alive = False # this way the historical population can still be sorted for alive True/False 
-        all_ind.current_ind_instances.pop(0) # remove the individual from the current list 
+        population.current_ind_instances.pop(0) # remove the individual from the current list 
     print "New pop of X Elites with X Weaker removed "    
-    #print_all_current(all_ind)
-    for individuals in all_ind.current_ind_instances:
+    #print_all_current(population)
+    for individuals in population.current_ind_instances:
         print "Surviving individual", individuals.indnum, "Euclid", individuals.euclid
-    generate_new_gen(all_ind)
+        individuals.parent_of_gen = population.gencount + 1
+        file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individual.indnum),(individual.gen))
+        with open(file_ind, 'a') as csvfile:
+            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+            #writer.writerow([individual.euclid,",",'Euclidean'])
+            writer.writerow([individual.sim_success,",",'Sim Sucess'])
+            writer.writerow([individual.real_success,",",'Real Sucess'])
+            riter.writerow([individual.parent_of_gen,",",'Parent of Generation'])
+
+    generate_new_gen(population)
 
 def generate_new_gen(remain_ind):
     # recall remain_ind is the entire population 
@@ -110,7 +123,6 @@ def generate_new_gen(remain_ind):
     zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
     vmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
     vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
-
     #remain_ind.current_ind_instances holds X number of Elites 
     remain_ind.gencount = remain_ind.gencount + 1
     print "The new Generation number is ", remain_ind.gencount
@@ -145,9 +157,7 @@ def generate_new_gen(remain_ind):
             remain_ind.current_ind_instances.pop(0)
 
     # results in a list 20 parents long, that can have repeats of the best parents
-    
     remain_ind.current_ind_instances.pop(0) # pop the last one in the list ready fro the next iteration 
-
     for individuals in individuals_to_reproduce:
         print "Luck Individual",individuals.indnum
         file_ind = "Results/Population/gen%s.csv" % (individuals.gen)
@@ -160,9 +170,9 @@ def generate_new_gen(remain_ind):
             writer.writerow([individuals.ypos,",",'Ypos'])
             writer.writerow([individuals.zpos,",",'Zpos'])
             writer.writerow([individuals.vmax,",",'Vmax'])
-            #writer.writerow([individual.success,",",'Sucess'])
+            #writer.writerow([individual.sim_success,",",'Sim Sucess'])
+            #writer.writerow([individual.sim_success,",",'Real Sucess'])
 
-    #raw_input()
     ### Above has generated 10 Pairs of Parents, they will may repeat but Superior fitness gives a better opportunity to repopulate. 
     for  i in range (0,10):
         # generate the new individuals 
@@ -192,45 +202,29 @@ def mutate(remain_ind):
                 number_genes_to_mutate = max_wp_length
 
             for i in range(0,number_genes_to_mutate):
-
-                #print "In mutating wp"
                 gene_to_mutate = random.randint(0,max_wp_length-1)
                 sigma = 0.1
-                #print "Gene",gene_to_mutate
                 value = individuals.xpos[gene_to_mutate] 
-                #print "Value",value
-                ######################################################################################
                 individuals.xpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
-                #print "New Value ",individuals.xpos[gene_to_mutate]
-                #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.ypos[gene_to_mutate] 
-                #print "Value",value
                 individuals.ypos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
-                #print "New Value ",individuals.ypos[gene_to_mutate]
-                #gene_to_mutate = random.randint(0,max_wp_length)
                 value = individuals.zpos[gene_to_mutate] 
-                #print "Value",value
                 individuals.zpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
-                #print "New Value ",individuals.zpos[gene_to_mutate]
-
         print "Finished Mutating"
         individuals.printIndnum()
-        #raw_input()
+    # Make sure that mutations dont cause issues and check all valid waypoints
+    check_valid_waypoints(remain_ind.current_ind_instances)
 
 def check_valid_waypoints(remain_ind): 
-    # this is passed a list of current Individuals
-    max_reach = 1.3
+    max_reach = 1.25 # Specs State 1.3m Reach
     for individuals in remain_ind:
         for i in range (0 , (len(individuals.xpos))):
             x_check = individuals.xpos[i]
             y_check = individuals.ypos[i]
             z_check = individuals.zpos[i]
-
             p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
             p2 = (0.0,0.0,0.0)
-            #print p2
-            euclid_check = distance.euclidean(p2,p1)
-            
+            euclid_check = distance.euclidean(p2,p1)         
             while (euclid_check > max_reach):
                 print euclid_check,"Euclidean Checked as was bad"
                 individuals.xpos[i] = (individuals.xpos[i]* 0.9)
@@ -240,34 +234,13 @@ def check_valid_waypoints(remain_ind):
                 y_check = individuals.ypos[i]
                 z_check = individuals.zpos[i]
                 p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
-                #p2 = (0.0,0.0,0.0)
-                #print p2
                 euclid_check = distance.euclidean(p2,p1)
             print euclid_check,"New Euclidean Accepted For", individuals.indnum
 
-
-
 def generate_new_children(remain_ind,parent_1, parent_2):
     #Passed the entire population and specificially the two parents that will generate two children. 
-    #Individuals
-        # self.indnum = indnum
-        # self.xpos = deepcopy(xpos)
-        # self.ypos = deepcopy(ypos)
-        # self.zpos = deepcopy(zpos)
-        # self.vmax = deepcopy(vmax)
-        # self.num_points = number_points
-        #send the new min max for each coordinate point to the new population generator. 
-    #Population 
-        # indcount = 1
-        # gencount = 1
-        # current_ind_instances = []
-        # indinstanceshistory = []
-    # grab the lowest number of point 
-
-    # check to make sure parent_1 and parent_2 
-
-    crossover_point = 0
-    equal = False
+    crossover_point = 0 # this will be set later
+    equal = False # are the two individuals equal length 
     #short_parent = 0 
     if parent_1.num_points < parent_2.num_points:
         crossover_point = parent_1.num_points
@@ -286,19 +259,8 @@ def generate_new_children(remain_ind,parent_1, parent_2):
 
         short_parent = parent_1
         long_parent = parent_2
-        equal = True 
-
-    # print "Cross Over Point",crossover_point," short parent == ", short_parent
-    # print "Short Parent X" , str(short_parent.xpos)[1:-1]
-    # print "Short Parent Y" , str(short_parent.ypos)[1:-1]
-    # print "Short Parent Z" , str(short_parent.zpos)[1:-1]
-
-    # print "Long Parent X" , str(long_parent.xpos)[1:-1]
-    # print "Long Parent Y" , str(long_parent.ypos)[1:-1]
-    # print "Long Parent Z" , str(long_parent.zpos)[1:-1]
-    # cross over point represnets the number of points avilable in the smallest parent 
-    
-    child_1x = []
+        equal = True   
+    child_1x = []#Ready for the new child xpos/ypos/zpos
     child_1y = []
     child_1z = []
     child_1v = []
@@ -343,7 +305,7 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     if equal == True: 
         child_1num = long_parent.num_points
         child_2num = short_parent.num_points
-        print "Even Cross over from Half"
+        print "Even Cross over from Half Chromo"
 
         for val in long_parent.xpos[0:crossover_point]: 
             child_1x.append(val)
@@ -380,14 +342,6 @@ def generate_new_children(remain_ind,parent_1, parent_2):
             child_1z.append(val)
         for val in short_parent.vmax[crossover_point:None]: 
             child_1v.append(val)    
-
-    # print "Child 1 X", str(child_1x)[1:-1]
-    # print "Child 1 Y", str(child_1y)[1:-1]
-    # print "Child 1 Z", str(child_1z)[1:-1]
-
-    # print "Child 2 X", str(child_2x)[1:-1]
-    # print "Child 2 Y", str(child_2y)[1:-1]
-    # print "Child 2 Z", str(child_2z)[1:-1]
     
     add = Individual(remain_ind.indcount,child_1num,child_1x,child_1y,child_1z,child_1v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
