@@ -129,7 +129,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     print "We started to move", X, Y, Z
     
     planner = move_group.plan()
-    print planner
+    #print planner
     ind.plan_1.append(planner)
     #move_group.plan = ind.plan_1 # THis line will be used later
     plan = move_group.go(wait=True)

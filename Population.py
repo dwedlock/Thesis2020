@@ -15,9 +15,11 @@ class Population:
     def __init__(self,numberinds):
         self.numberinds = numberinds
         self.numbpoints = random.randint(1,10)
+        #self.pop_size
         print "Init Population worked"
 
     def generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen):
+        #self.pop_size = num
         print "Generating individuals"
         for x in range (0,num): # ie for each individual 
             

@@ -45,7 +45,7 @@ def main():
     writer.publish(hello_str)
     filestring.publish(file_str)
     print "Generating a population"
-    pop = Population(20)
+    pop = Population(10)
     pop.gencount = pop.gencount + 1
     grav = GravityControl()
     grav.init_values()

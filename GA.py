@@ -102,13 +102,13 @@ def evaluate_pop(population): # recall the whole pop
     for individuals in population.current_ind_instances:
         print "Surviving individual", individuals.indnum, "Euclid", individuals.euclid
         individuals.parent_of_gen = population.gencount + 1
-        file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individual.indnum),(individual.gen))
+        file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individuals.indnum),(individuals.gen))
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             #writer.writerow([individual.euclid,",",'Euclidean'])
-            writer.writerow([individual.sim_success,",",'Sim Sucess'])
-            writer.writerow([individual.real_success,",",'Real Sucess'])
-            writer.writerow([individual.parent_of_gen,",",'Parent of Generation'])
+            writer.writerow([individuals.sim_success,",",'Sim Sucess'])
+            writer.writerow([individuals.real_success,",",'Real Sucess'])
+            writer.writerow([individuals.parent_of_gen,",",'Parent of Generation'])
 
     generate_new_gen(population)
 
@@ -174,7 +174,7 @@ def generate_new_gen(remain_ind):
             #writer.writerow([individual.sim_success,",",'Real Sucess'])
 
     ### Above has generated 10 Pairs of Parents, they will may repeat but Superior fitness gives a better opportunity to repopulate. 
-    for  i in range (0,10):
+    for  i in range (0, ((remain_ind.numberinds)/2)):
         # generate the new individuals 
         generate_new_children(remain_ind,individuals_to_reproduce[0], individuals_to_reproduce[1])
         individuals_to_reproduce.pop(0)
