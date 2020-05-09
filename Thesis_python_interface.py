@@ -55,6 +55,7 @@ class MoveGroupPythonIntefaceTutorial(object):
     display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',
                                                    moveit_msgs.msg.DisplayTrajectory,
                                                    queue_size=20)
+    #/move_group/trajectory_execution/allowed_start_tolerance
 
     planning_frame = move_group.get_planning_frame()
     eef_link = move_group.get_end_effector_link()
@@ -78,6 +79,10 @@ class MoveGroupPythonIntefaceTutorial(object):
     self.planning_frame = planning_frame
     self.eef_link = eef_link
     self.group_names = group_names
+    self.prev_x = 0
+    self.prev_y = 0
+    self.prev_z = 0
+    
 
   def go_to_joint_state(self,zero,one,two,three,four,five):
     # NOTE Danger This joint state controller does no planning and will operate to collision
@@ -100,15 +105,15 @@ class MoveGroupPythonIntefaceTutorial(object):
     #print self.robot.get_current_state()
     move_group.allow_looking(True)
     move_group.allow_replanning(True)
-    move_group.set_planning_time(10)
-    move_group.set_num_planning_attempts(50) #Gets ignored by RVIZ
-    move_group.set_goal_position_tolerance(0.5)
-    move_group.set_goal_orientation_tolerance(1.0)
+    move_group.set_planning_time(90)
+    move_group.set_num_planning_attempts(2050) #Gets ignored by RVIZ
+    move_group.set_goal_position_tolerance(0.2)
+    move_group.set_goal_orientation_tolerance(0.2)
     move_group.set_goal_tolerance(0.5)
     move_group.set_goal_joint_tolerance(0.5)
-    return all_close(joint_goal, current_joints, 0.01)
+    return all_close(joint_goal, current_joints, 0.03)
 
-  def go_to_pose_goal(self,W,X,Y,Z,V,writer,ind):
+  def go_to_pose_goal(self,W,X,Y,Z,V,writer,ind,iteration):
     # Copy class variables to local variables to make the web tutorials more clear.
     move_group = self.move_group
     move_group.set_max_velocity_scaling_factor(V)
@@ -116,37 +121,73 @@ class MoveGroupPythonIntefaceTutorial(object):
     #print "Planning to a Pose Goal X ", X," Y ",Y," Z ",Z
     pose_goal = geometry_msgs.msg.Pose()
     # Note these are in Quarternians 
+    #if (interation == 0):
+    move_group.stop()
+    current_pose = self.move_group.get_current_pose().pose
+    move_group.set_start_state_to_current_state()
+    #else:
+    move_group.clear_pose_targets()
+
+    move_group.set_planner_id = iteration
+
     pose_goal.orientation.w = W#1.0
     pose_goal.position.x = X#0.4
     pose_goal.position.y = Y#0.1
     pose_goal.position.z = Z#0.4 Confirmed as UP
     move_group.set_pose_target(pose_goal)
     ## Now, we call the planner to compute the plan and execute it.
-    inst_str = "start"
-    writer.publish(inst_str) # Starts the Listener
-    writer.publish(inst_str)
-    time.sleep(0.5)
-    print "We started to move", X, Y, Z
+    #inst_str = "start"
+    #writer.publish(inst_str) # Starts the Listener
+    #writer.publish(inst_str)
+    #time.sleep(0.5)
+    #print "We started to move", X, Y, Z
+    #0.1 0.1 0.5 0.5 0.01
+
+    # below errros fixed by adding allowed start tolerance to trajectory execution launch 
+    #[ERROR] [1587709928.889767583, 944.830000000]: 
+    #Invalid Trajectory: start point deviates from current robot state more than 0.01
+    #joint 'elbow_joint': expected: 0.196037, current: -0.411416
+
+    #[ERROR] [1587710219.463240473, 1229.669000000]: 
+    #Invalid Trajectory: start point deviates from current robot state more than 0.01
+    #joint 'elbow_joint': expected: 0.130583, current: 0.151856
+
+    #[ERROR] [1587710391.002413623, 1399.749000000]: 
+    #Invalid Trajectory: start point deviates from current robot state more than 0.01
+    #joint 'elbow_joint': expected: 0.0518671, current: -0.169169
+
+
+    #[ERROR] [1587710762.060893651, 1768.368000000]: 
+    #Invalid Trajectory: start point deviates from current robot state more than 0.01
+    #joint 'elbow_joint': expected: -0.0116591, current: 0.083973
+
+
     
     planner = move_group.plan()
+    #print "Planner"
+    #print planner
     #print planner
     ind.plan_1.append(planner)
     #move_group.plan = ind.plan_1 # THis line will be used later
+    print "Move to next point for the plan"
     plan = move_group.go(wait=True)
     #print plan_1
-    inst_str = "stop"
-    writer.publish(inst_str) #stops the listener 
-    time.sleep(0.1)
-    writer.publish(inst_str)
-    print "We finished a move", plan
+    #inst_str = "stop"
+    #writer.publish(inst_str) #stops the listener 
+    #time.sleep(0.1)
+    #writer.publish(inst_str)
+    #print "We finished a move", plan
     # Calling `stop()` ensures that there is no residual movement
     move_group.stop()
     # It is always good to clear your targets after planning with poses.
     # Note: there is no equivalent function for clear_joint_value_targets()
     move_group.clear_pose_targets()
     current_pose = self.move_group.get_current_pose().pose
+    #plan = True
     #all_close(pose_goal, current_pose, 0.01)
     return plan
+
+
 
   def plan_cartesian_path(self,coords,ind,writer,scale=1):
     #Note, while the below code operates there is a random intermitent error that causes the controller to fail
@@ -225,10 +266,22 @@ class MoveGroupPythonIntefaceTutorial(object):
 
 
   def execute_plan(self, plan):
-    move_group = self.move_group
-    move_group.execute(plan, wait=True)
-    print "Ive executed the plan"
-    rospy.sleep(5)
+    #print "Planner"
+    #print plan
+    #print "Im starting a plan" 
+    #self.move_group.clear_pose_targets()
+    print "In execute"
+    #move_group = self.move_group
+    #time.sleep(1)
+    #
+    #self.move_group.set_start_state_to_current_state() # this generates errors/ 
+    state = self.move_group.execute(plan, wait=True)
+    #time.sleep(10) # this does not help...
+
+    print "Released from execute"
+    #print state
+    #print "Ive executed the plan"
+    #rospy.sleep(5)
 
 
   def wait_for_state_update(self, box_is_known=False, box_is_attached=False, timeout=4):

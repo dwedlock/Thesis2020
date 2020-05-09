@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from Population import Population
 from Thesis_python_interface import MoveGroupPythonIntefaceTutorial
 import time
@@ -14,20 +15,27 @@ from std_msgs.msg import String
 from moveit_commander.conversions import pose_to_list
 from gazebo_msgs.srv import GetModelState, GetModelStateRequest, GetLinkState
 from gazebo_msgs.msg import LinkState
+
+
+
 #from odom import Odom # this was attached to the old recording process
 #import multiprocessing # this was attached to the old recording process
 #from multiprocessing import Process , Queue # this was attached to the old recording process
 from GA import *
 #Physics 
 from gravity import GravityControl
+from velocity import VelocityControl
 
 def main():
+
+
+
     print "Python has started"
     tutorial = MoveGroupPythonIntefaceTutorial()
     model_info_prox = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
     rospy.wait_for_service('/gazebo/get_link_state')
     # Initial population has these ranges for 10 positions
-    numpoints = [2,9]
+    numpoints = [2,6]
     xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
     xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
     ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
@@ -40,6 +48,7 @@ def main():
     # writer below is to pass sings to out Link Listener and recording program
     writer = rospy.Publisher('writer', String, queue_size=1)
     filestring = rospy.Publisher('filestring', String, queue_size=1)
+    rospy.set_param('/move_group/trajectory_execution/allowed_start_tolerance',0)
     hello_str = "Test listener is working %s" % rospy.get_time()
     file_str = "/NewFile"
     writer.publish(hello_str)
@@ -48,6 +57,7 @@ def main():
     pop = Population(10)
     pop.gencount = pop.gencount + 1
     grav = GravityControl()
+    velocity = VelocityControl()
     grav.init_values()
     grav.change_gravity(0.0,0.0,-9.8)
 
@@ -63,7 +73,7 @@ def main():
     while (1):
         
         grav.change_gravity(0.0,0.0,-9.8)
-        run_simulation(tutorial,pop,pop.gencount,filestring,writer)
+        run_simulation(tutorial,pop,pop.gencount,filestring,writer,velocity)
         grav.change_gravity(0.0,0.0,-11.8)
         run_real(tutorial,pop,pop.gencount,filestring,writer)
         evaluate_pop(pop) # This is a GA function call to evauate this population before the next generatio   
@@ -71,7 +81,7 @@ def main():
 
     print "============ Exiting the Loop!"
 
-def run_simulation(tutorial,pop,loops,filestring,writer):
+def run_simulation(tutorial,pop,loops,filestring,writer,velocity):
   for individuals in pop.current_ind_instances:
     file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
     file_str_real = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (loops))
@@ -87,10 +97,14 @@ def run_simulation(tutorial,pop,loops,filestring,writer):
     ## The line was removed because of a fault in the cartesian_plan software
     #cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
     test = True
+    ##Generate Plans for Each Waypoints
+    tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
+    print "Starting Planner"
+    time.sleep(10)
     for i in range(0,(len(individuals.xpos))):
       individuals.sim_success = True
       if test == True:
-        return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i],writer,individuals)
+        return_tf = tutorial.go_to_pose_goal(1.0,individuals.xpos[i],individuals.ypos[i],individuals.zpos[i],individuals.vmax[i],writer,individuals,i)
       if test == True:
         test = return_tf
       if test == False:
@@ -100,6 +114,22 @@ def run_simulation(tutorial,pop,loops,filestring,writer):
         individuals.sim_run = True
       else:
         print " "
+    ##Execute Plans for each way point
+    tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
+    print "About to execute"
+    time.sleep(10)
+    if individuals.sim_success == True:
+      for i in range(0,(len(individuals.xpos))):
+        #for each waypoint
+        print "Moving to a point"
+        tutorial.execute_plan(individuals.plan_1[i])
+
+    #if individuals.sim_success == True:
+      #print "We had a good plan and excecution, now do velocity component"
+      #tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) #home before move
+      #time.sleep(10) #needs time to move home
+      #velocity.move1(individuals)
+    
 
 def run_real(tutorial,pop,loops,filestring,writer):
   print "Running Real"
