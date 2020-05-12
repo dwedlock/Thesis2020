@@ -14,9 +14,18 @@ class Population:
     indinstanceshistory = []
     def __init__(self,numberinds):
         self.numberinds = numberinds
-        self.numbpoints = random.randint(1,10)
+        #self.numbpoints = random.randint(1,10)
         #self.pop_size
         print "Init Population worked"
+        self.numpoints = [2,4]
+        self.xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
+        self.xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
+        self.ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
+        self.ymax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]#[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+        self.zmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+        self.zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
+        self.vmin = [0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01]
+        self.vmax = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
 
     def generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen):
         #self.pop_size = num

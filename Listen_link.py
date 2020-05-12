@@ -23,6 +23,7 @@ def callback(data):
 
 def callback_file(data_file):
     global file_to_write
+    
     file_to_write = data_file.data
     print file_to_write
 
@@ -72,3 +73,7 @@ if __name__ == '__main__':
 
 
 
+        #file_ind = "Results/Individuals/ind%sgen%s.csv" % ((self.indnum),(self.gen))
+        ##with open(file_ind, 'a') as csvfile:
+        #    writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+        #    writer.writerow([self.gen,",",'Generation'])

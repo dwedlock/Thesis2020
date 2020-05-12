@@ -101,7 +101,7 @@ def evaluate_pop(population): # recall the whole pop
     #print_all_current(population)
     for individuals in population.current_ind_instances:
         print "Surviving individual", individuals.indnum, "Euclid", individuals.euclid
-        individuals.parent_of_gen = population.gencount + 1
+        individuals.parent_of_gen = (population.gencount) + 1
         file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individuals.indnum),(individuals.gen))
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
@@ -109,25 +109,28 @@ def evaluate_pop(population): # recall the whole pop
             writer.writerow([individuals.sim_success,",",'Sim Sucess'])
             writer.writerow([individuals.real_success,",",'Real Sucess'])
             writer.writerow([individuals.parent_of_gen,",",'Parent of Generation'])
-
+            writer.writerow([individuals.acc_euclid,",",'Acc Euclidean Generation'])
+    print "      THE    CURRENT    POPULATION IS    ",   population.gencount      
+    population.gencount = population.gencount + 1
+    print "      THE    NEW   POPULATION IS    ",   population.gencount      
     generate_new_gen(population)
 
 def generate_new_gen(remain_ind):
     # recall remain_ind is the entire population 
-    numpoints = [2,9]
-    xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
-    xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
-    ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
-    ymax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]#[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
-    zmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
-    zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
-    vmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
-    vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
+    #numpoints = [2,9]
+    #xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
+    #xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
+    #ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
+    #ymax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]#[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+    #zmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+    #zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
+    #vmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
+    #vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
     #remain_ind.current_ind_instances holds X number of Elites 
-    remain_ind.gencount = remain_ind.gencount + 1
+    #remain_ind.gencount = remain_ind.gencount + 1
     print "The new Generation number is ", remain_ind.gencount
     worst_to_remove = ((remain_ind.numberinds)/2)
-    newnum = 20 # this is how many new individuals to generate
+    #newnum = 20 # this is how many new individuals to generate
     #numpoints = []
     sortnumpoints = [] # list if two min max
     for individuals in remain_ind.current_ind_instances:
@@ -141,7 +144,7 @@ def generate_new_gen(remain_ind):
         choice = random.choice(remain_ind.current_ind_instances)
         if choice.euclid == 0:
             print "This was a bad choice because its euclid was zero, generate a new random ind"        
-            remain_ind.generate_inds(1,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,remain_ind.gencount)
+            remain_ind.generate_inds(1,remain_ind.numpoints,remain_ind.xmin,remain_ind.xmax,remain_ind.ymin,remain_ind.ymax,remain_ind.zmin,remain_ind.zmax,remain_ind.vmin,remain_ind.vmax,remain_ind.gencount)
         else: individuals_to_reproduce.append(choice)
         choice_two = random.choice(remain_ind.current_ind_instances)
         #max_loop = 0
@@ -151,7 +154,7 @@ def generate_new_gen(remain_ind):
             #max_loop = max_loop + 1
         if choice_two.euclid == 0:
             print "This was a bad choice_two because its euclid was zero, generate a new random ind"   
-            remain_ind.generate_inds(1,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,remain_ind.gencount)
+            remain_ind.generate_inds(1,remain_ind.numpoints,remain_ind.xmin,remain_ind.xmax,remain_ind.ymin,remain_ind.ymax,remain_ind.zmin,remain_ind.zmax,remain_ind.vmin,remain_ind.vmax,remain_ind.gencount)
         else: individuals_to_reproduce.append(choice_two)
         if i < (worst_to_remove-2): # to make sure we dont end up with just one value in the list and therefore self replicating
             remain_ind.current_ind_instances.pop(0)
@@ -184,6 +187,9 @@ def generate_new_gen(remain_ind):
     mutate(remain_ind)
     # Generate the WP for children
     remain_ind.gen_wp()
+    cal_acc_euclid(remain_ind)
+
+
 
 def mutate(remain_ind):
 
@@ -218,24 +224,41 @@ def mutate(remain_ind):
 def check_valid_waypoints(remain_ind): 
     max_reach = 1.25 # Specs State 1.3m Reach
     for individuals in remain_ind:
-        for i in range (0 , (len(individuals.xpos))):
-            x_check = individuals.xpos[i]
-            y_check = individuals.ypos[i]
-            z_check = individuals.zpos[i]
-            p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
-            p2 = (0.0,0.0,0.0)
-            euclid_check = distance.euclidean(p2,p1)         
-            while (euclid_check > max_reach):
-                print euclid_check,"Euclidean Checked as was bad"
-                individuals.xpos[i] = (individuals.xpos[i]* 0.9)
-                individuals.ypos[i] = (individuals.ypos[i]* 0.9)
-                individuals.zpos[i] = (individuals.ypos[i]* 0.9)
+        if individuals.sim_run == False:
+
+            for i in range (0 , (len(individuals.xpos))):
                 x_check = individuals.xpos[i]
                 y_check = individuals.ypos[i]
                 z_check = individuals.zpos[i]
                 p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
-                euclid_check = distance.euclidean(p2,p1)
-            print euclid_check,"New Euclidean Accepted For", individuals.indnum
+                p2 = (0.0,0.0,0.0)
+                euclid_check = distance.euclidean(p2,p1)         
+                while (euclid_check > max_reach):
+                    print euclid_check,"Euclidean Checked and was found to be bad resizing to bring into range"
+                    individuals.xpos[i] = (individuals.xpos[i]* 0.9)
+                    individuals.ypos[i] = (individuals.ypos[i]* 0.9)
+                    individuals.zpos[i] = (individuals.ypos[i]* 0.9)
+                    x_check = individuals.xpos[i]
+                    y_check = individuals.ypos[i]
+                    z_check = individuals.zpos[i]
+                    p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
+                    euclid_check = distance.euclidean(p2,p1)
+                print euclid_check,"New Euclidean Accepted For", individuals.indnum
+
+def cal_acc_euclid(remain_ind):
+    #for individuals in remain_ind:
+    for individuals in remain_ind.current_ind_instances:    
+        if individuals.sim_run == False:
+            print "ind num in acc auclid", individuals.indnum
+            for i in range (0 , (len(individuals.xpos))):
+                x_check = individuals.xpos[i]
+                y_check = individuals.ypos[i]
+                z_check = individuals.zpos[i]
+                p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
+                p2 = (0.0,0.0,0.0)
+                point_euclid_add = distance.euclidean(p2,p1)  
+                individuals.acc_euclid = individuals.acc_euclid + point_euclid_add
+
 
 def generate_new_children(remain_ind,parent_1, parent_2):
     #Passed the entire population and specificially the two parents that will generate two children. 
@@ -342,7 +365,7 @@ def generate_new_children(remain_ind,parent_1, parent_2):
             child_1z.append(val)
         for val in short_parent.vmax[crossover_point:None]: 
             child_1v.append(val)    
-    
+    remain_ind.indcount = remain_ind.indcount + 1
     add = Individual(remain_ind.indcount,child_1num,child_1x,child_1y,child_1z,child_1v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
@@ -351,4 +374,4 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     add = Individual(remain_ind.indcount,child_2num,child_2x,child_2y,child_2z,child_2v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
-    remain_ind.indcount = remain_ind.indcount + 1
+    

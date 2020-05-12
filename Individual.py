@@ -16,9 +16,11 @@ class Individual:
         self.num_points = number_points
         self.waypoints = []
         self.euclid = 0 #
+        self.acc_euclid = 0
         self.gen = gen
         self.sim_success = False
         self.real_success = False
+        self.execute_success = False
         self.parent_of_gen = 0 
         self.plan_1 = []
 
