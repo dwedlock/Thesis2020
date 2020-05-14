@@ -91,7 +91,7 @@ def evaluate_pop(population): # recall the whole pop
                 individuals.saved_to_gens = True
                 writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
                 #number_points,x_pos,y_pos,z_pos,v_max,gen
-                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.xpos,",",individuals.ypos,",",individuals.zpos,",",individuals.vmax,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.waypoints,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid])
+                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.xpos,",",individuals.ypos,",",individuals.zpos,",",individuals.vmax,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.waypoints,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid,",",individuals.isElite,",",individuals.EliteMapPos])
         
     # sorts best to worst Euclidean 
     population.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)

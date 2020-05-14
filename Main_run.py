@@ -66,6 +66,7 @@ def main():
       pop.generate_inds(pop.numberinds,pop.numpoints,pop.xmin,pop.xmax,pop.ymin,pop.ymax,pop.zmin,pop.zmax,pop.vmin,pop.vmax,generation)
       pop.gen_wp()
     if pop.res_sim == True:
+      print "We have had a restart, attempting to load individuals"
       pop.load_inds()
 
     check_valid_waypoints(pop.current_ind_instances)

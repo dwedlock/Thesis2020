@@ -27,6 +27,8 @@ class Individual:
         self.saved_to_gens
         self.mutated = False
         self.calc_euclid = False
+        self.isElite = False
+        self.EliteMapPos = 0
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):

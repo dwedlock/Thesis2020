@@ -38,35 +38,59 @@ class Population:
         #with open(file_ind, 'a') as csvfile:
         reader = csv.reader(file_ind)
         for row in reader:#range (1,self.last_working_ind):
-
             add = Individual(row[2],number_points,x_pos,y_pos,z_pos,v_max,gen)
-            Population.current_ind_instances.append(add)
-            Population.indinstanceshistory.append(add)
             Population.indcount = row[2] #individual number
-            
             add.saved_to_gens = True
             #0individuals.gen
-            #1'Generation'
+            add.gen= row[0]
+            #1'Generation
             #2individuals.indnum
+            add.indnum= row[2]
             #3"Euclid"
             #4individuals.euclid,
+            add.euclid= row[4]
             #5individuals.num_points
+            add.num_points= row[]5
             #6individuals.xpos
+            add.xpos= row[6]
             #7individuals.ypos
+            add.ypos= row[7]
             #8individuals.zpos
+            add.zpos= row[8]
             #9individuals.vmax
+            add.vmax= row[9]
             #10 individuals.gen
+            add.gen= row[10]
             #11 individuals.alive
+            add.alive= row[11]
             #12 individuals.sim_run
+            add.sim_run= row[12]
             #13 individuals.real_run
+            add.real_run= row[13]
             #14 individuals.waypoints
+            add.waypoints= row[14]
             #15 individuals.acc_euclid
+            add.acc_euclid= row[15]
             #16 individuals.sim_success
+            add.sim_success= row[16]
             #17 individuals.execute_success
-            #18 individuals.parent_of_gen
+            add.execute_success= row[17]
+            #18 individuals.saved_to_gens
+            add.saved_to_gens= row[18]
             #19 individuals.saved_to_gens
+            add.saved_to_gens= row[19]
             #20 individuals.mutated
+            add.mutated= row[20]
             #21 individuals.calc_euclid
+            add.calc_euclid= row[21]
+            #22 individuals.isElite
+            add.isElite= row[22]
+            #23 individuals.EliteMapPos
+            add.EliteMapPos = row[23]
+            # add the updated individual to the current inds in the population
+            Population.current_ind_instances.append(add)
+            Population.indinstanceshistory.append(add)
+
         
 
 
