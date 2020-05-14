@@ -1,0 +1,14 @@
+5 , Generation
+35 , |Individual Number|
+2 , |Number of points|
+0.5117082505048401 -0.3509126000488982
+0.6986364818779496 -0.19219348271023262
+0.914807094234281 1.0862033418709884
+0.019161765902573975 0.18429072376831432
+9.240793503026302 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+6 , |Parent of Generation|
+1.5565337121985745 , |Acc Euclidean Generation|

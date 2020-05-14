@@ -5,25 +5,26 @@ import csv
 class Individual:
 
     def __init__(self,indnum,number_points,xpos,ypos,zpos,vmax,gen):
-        self.alive = True
-        self.sim_run = False
-        self.real_run = False
+        self.gen = gen
         self.indnum = indnum
+        self.euclid = 0 #
+        self.num_points = number_points
         self.xpos = deepcopy(xpos)
         self.ypos = deepcopy(ypos)
         self.zpos = deepcopy(zpos)
         self.vmax = deepcopy(vmax)
-        self.num_points = number_points
+
+        self.alive = True
+        self.sim_run = False
+        self.real_run = False      
         self.waypoints = []
-        self.euclid = 0 #
         self.acc_euclid = 0
-        self.gen = gen
         self.sim_success = False
         self.real_success = False
         self.execute_success = False
         self.parent_of_gen = 0 
         self.plan_1 = []
-
+        self.saved_to_gens
         self.mutated = False
         self.calc_euclid = False
         print "Init Ind", indnum, "completed"

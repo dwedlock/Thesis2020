@@ -86,9 +86,13 @@ def evaluate_pop(population): # recall the whole pop
             individuals.euclid = 0 # ensure set to zero 
             print "Individual number",individuals.indnum," FAILED and has a euclidean of Zero ",individuals.euclid
         file_ind = "Results/Population/totalgens.csv"
-        with open(file_ind, 'a') as csvfile:
-            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-            writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid])
+        if individuals.saved_to_gens == False:
+            with open(file_ind, 'a') as csvfile:
+                individuals.saved_to_gens = True
+                writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+                #number_points,x_pos,y_pos,z_pos,v_max,gen
+                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.xpos,",",individuals.ypos,",",individuals.zpos,",",individuals.vmax,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.waypoints,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid])
+        
     # sorts best to worst Euclidean 
     population.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
 

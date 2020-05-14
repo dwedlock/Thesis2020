@@ -43,16 +43,6 @@ def main():
     tutorial = MoveGroupPythonIntefaceTutorial()
     model_info_prox = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
     rospy.wait_for_service('/gazebo/get_link_state')
-    # Initial population has these ranges for 10 positions
-    #numpoints = [2,6]
-    #xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
-    #xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
-    #ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]
-    #ymax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]#[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
-    #zmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
-    #zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
-    #vmin = [0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]
-    #vmax = [1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0]
     rospy.wait_for_service('/gazebo/get_model_state')
     # writer below is to pass sings to out Link Listener and recording program
     writer = rospy.Publisher('writer', String, queue_size=1)
@@ -63,16 +53,21 @@ def main():
     writer.publish(hello_str)
     filestring.publish(file_str)
     print "Generating a population"
-    pop = Population(8) #should be an even number 10-20 
-    pop.gencount = pop.gencount + 1
+    pop = Population(8,False,0) #should be an even number 10-20 
+    if pop.gencount == 0:
+      pop.gencount = pop.gencount + 1
     grav = GravityControl()
     velocity = VelocityControl()
     grav.init_values()
     grav.change_gravity(0.0,0.0,-9.8)
 
     generation = pop.gencount
-    pop.generate_inds(pop.numberinds,pop.numpoints,pop.xmin,pop.xmax,pop.ymin,pop.ymax,pop.zmin,pop.zmax,pop.vmin,pop.vmax,generation)
-    pop.gen_wp()
+    if pop.res_sim == False:
+      pop.generate_inds(pop.numberinds,pop.numpoints,pop.xmin,pop.xmax,pop.ymin,pop.ymax,pop.zmin,pop.zmax,pop.vmin,pop.vmax,generation)
+      pop.gen_wp()
+    if pop.res_sim == True:
+      pop.load_inds()
+
     check_valid_waypoints(pop.current_ind_instances)
     print "Success adding table "
     time.sleep(1)

@@ -6,13 +6,15 @@ from datetime import datetime
 import time
 import sys
 from GA import *
+import csv
+
 
 class Population:
     indcount = 1
     gencount = 0
     current_ind_instances = []
     indinstanceshistory = []
-    def __init__(self,numberinds):
+    def __init__(self,numberinds,restart_sim,last_ind):
         self.numberinds = numberinds
         #self.numbpoints = random.randint(1,10)
         #self.pop_size
@@ -26,6 +28,49 @@ class Population:
         self.zmax = [1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8,1.8]
         self.vmin = [0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01]
         self.vmax = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+        self.res_sim = restart_sim
+        self.last_working_ind = last_ind
+
+    def load_inds():
+        print "We are starting a load of historical individuals, we assume the csv file is correct"
+        
+        file_ind = "Results/Population/totalgens.csv"
+        #with open(file_ind, 'a') as csvfile:
+        reader = csv.reader(file_ind)
+        for row in reader:#range (1,self.last_working_ind):
+
+            add = Individual(row[2],number_points,x_pos,y_pos,z_pos,v_max,gen)
+            Population.current_ind_instances.append(add)
+            Population.indinstanceshistory.append(add)
+            Population.indcount = row[2] #individual number
+            
+            add.saved_to_gens = True
+            #0individuals.gen
+            #1'Generation'
+            #2individuals.indnum
+            #3"Euclid"
+            #4individuals.euclid,
+            #5individuals.num_points
+            #6individuals.xpos
+            #7individuals.ypos
+            #8individuals.zpos
+            #9individuals.vmax
+            #10 individuals.gen
+            #11 individuals.alive
+            #12 individuals.sim_run
+            #13 individuals.real_run
+            #14 individuals.waypoints
+            #15 individuals.acc_euclid
+            #16 individuals.sim_success
+            #17 individuals.execute_success
+            #18 individuals.parent_of_gen
+            #19 individuals.saved_to_gens
+            #20 individuals.mutated
+            #21 individuals.calc_euclid
+        
+
+
+
 
     def generate_inds(self,num,numpoints,xmin,xmax,ymin,ymax,zmin,zmax,vmin,vmax,gen):
         #self.pop_size = num
@@ -60,6 +105,8 @@ class Population:
             Population.current_ind_instances.append(add)
             Population.indinstanceshistory.append(add)
             Population.indcount = Population.indcount + 1
+
+
 
     def printpop(self):
         ()
