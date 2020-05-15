@@ -83,7 +83,7 @@ def main():
         print "Starting for population count number", pop.gencount
         run_simulation(tutorial,pop,pop.gencount,filestring,writer,velocity)
         #make gravity Heavier to change simulation of 'real' slightly
-        grav.change_gravity(0.0,0.0,-11.8)
+        grav.change_gravity(0.0,0.0,-10.8)
         run_real(tutorial,pop,pop.gencount,filestring,writer,velocity)
         # Evaluate, also calculates Euclidean based on collected data points between sim and real
         evaluate_pop(pop) # This is a GA function call to evauate this population before the next generatio   
@@ -114,10 +114,10 @@ def run_simulation(tutorial,pop,loops,filestring,writer,velocity):
     # Below starts the planner for each individual in the population
     # This is a slow process and requires greater computational time. 
     # There is a pause between waypoints however the successful plans are saved for execution later. 
-
+    time.sleep(10)
     if individuals.sim_run == False:
       print "Starting Planner"
-      time.sleep(10)
+      
       for i in range(0,(len(individuals.xpos))):
         #individuals.sim_success = True
         if test == True:
@@ -141,11 +141,12 @@ def run_simulation(tutorial,pop,loops,filestring,writer,velocity):
     # Below executes the sucessful plans for each waypoint, this is a fast process and needs to be recorded. 
 
     print "About to execute for ind number ",individuals.indnum,"Success is ",individuals.sim_success
-    time.sleep(10)
+    
     inst_str = "start" 
     writer.publish(inst_str) # Starts the Listener
     time.sleep(1)
     if individuals.sim_success == True and individuals.execute_success == False:
+      time.sleep(10)
       inst_str = "start" 
       writer.publish(inst_str) # Starts the Listener
       for i in range(0,(len(individuals.xpos))):
@@ -171,7 +172,7 @@ def run_real(tutorial,pop,loops,filestring,writer,velocity):
     
     print "Run REAL Should be at home position, all joints Zero, ready for Individual", individuals.indnum,"Gen",individuals.gen
     tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
-    time.sleep(10)
+    
     print "REAL Should be at home position, all joints Zero, ready for Individual", individuals.indnum
     if individuals.real_run == False: # this line ensures we only do the new ones
       file_str = "Results/Real/ind%sgen%s.csv" % ((individuals.indnum), (pop.gencount))
@@ -185,6 +186,7 @@ def run_real(tutorial,pop,loops,filestring,writer,velocity):
     writer.publish(inst_str) # Starts the Listener
     time.sleep(1) # ensure we got a start
     if individuals.sim_success == True and individuals.execute_success == False:
+      time.sleep(10)
       inst_str = "start"
       writer.publish(inst_str)
       for i in range(0,(len(individuals.xpos))):

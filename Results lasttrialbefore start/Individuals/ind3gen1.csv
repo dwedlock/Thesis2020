@@ -1,0 +1,21 @@
+1 , Generation
+3 , |Individual Number|
+3 , |Number of points|
+-0.5050679673264806 , 0.8712134913154282 , 1.001493223826804 , 0.44110705637686815
+0.2004649098048571 , 0.5838017055578953 , 1.414932971164154 , 0.44110705637686815
+-0.05732098574019351 , 0.5882767273012152 , 0.7741882971265164 , 0.44110705637686815
+6.015883290910327 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+2 , |Parent of Generation|
+2.8819568604132497 , |Acc Euclidean Generation|
+True , |Sim Sucess|
+False , |Real Sucess|
+2 , |Parent of Generation|
+5.897072255908534 , |Acc Euclidean Generation|
+True , |Sim Sucess|
+False , |Real Sucess|
+2 , |Parent of Generation|
+5.897072255908534 , |Acc Euclidean Generation|

@@ -1,0 +1,60 @@
+1 , Generation
+8 , |Individual Number|
+2 , |Number of points|
+-0.07677161392247422 , -0.15010103045835999 , 1.2664474114043656 , 0.15580445916908103
+0.04743839304970543 , 0.7195505703883783 , 1.3962355190421074 , 0.15580445916908103
+3.870626283497493 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+2 , |Parent of Generation|
+1.2444343944806708 , |Acc Euclidean Generation|
+1 , Generation
+8 , |Individual Number|
+2 , |Number of points|
+-0.05338558546781283 , -0.19599063933222927 , 1.1876122573063288 , 0.15580445916908103
+0.04743839304970543 , 0.7195505703883783 , 1.3962355190421074 , 0.15580445916908103
+7.7412525669949845 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+3 , |Parent of Generation|
+2.5454047518541074 , |Acc Euclidean Generation|
+1 , Generation
+8 , |Individual Number|
+2 , |Number of points|
+-0.05338558546781283 , -0.19599063933222927 , 1.1876122573063288 , 0.15580445916908103
+0.04743839304970543 , 0.7195505703883783 , 1.3962355190421074 , 0.15580445916908103
+True , |Sim Sucess|
+False , |Real Sucess|
+2 , |Parent of Generation|
+2.4888687889613417 , |Acc Euclidean Generation|
+1 , Generation
+8 , |Individual Number|
+2 , |Number of points|
+-0.11270679145781234 , -0.05927488352964132 , 1.277555442759454 , 0.15580445916908103
+-0.1443047700565363 , 0.6680506864237109 , 1.2772976975683747 , 0.15580445916908103
+True , |Sim Sucess|
+False , |Real Sucess|
+3 , |Parent of Generation|
+3.585055200104941 , |Acc Euclidean Generation|
+True , |Sim Sucess|
+False , |Real Sucess|
+2 , |Parent of Generation|
+2.4888687889613417 , |Acc Euclidean Generation|
+1 , Generation
+8 , |Individual Number|
+2 , |Number of points|
+-0.11071906676480374 , -0.10071219701953507 , 1.2500817328181117 , 0.15580445916908103
+-0.004873041908076296 , 0.7607393356688623 , 1.3484732349089763 , 0.15580445916908103
+True , |Sim Sucess|
+False , |Real Sucess|
+3 , |Parent of Generation|
+3.745128944407253 , |Acc Euclidean Generation|
+1 , Generation
+8 , |Individual Number|
+2 , |Number of points|
+-0.11071906676480374 , -0.10071219701953507 , 1.2500817328181117 , 0.15580445916908103
+-0.004873041908076296 , 0.7607393356688623 , 1.3484732349089763 , 0.15580445916908103

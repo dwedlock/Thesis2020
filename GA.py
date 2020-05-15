@@ -99,7 +99,7 @@ def evaluate_pop(population): # recall the whole pop
                 individuals.saved_to_gens = True
                 writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
                 #number_points,x_pos,y_pos,z_pos,v_max,gen
-                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid,",",individuals.isElite,",",individuals.EliteMapPos,",",individuals.i_box_Elite,",",individuals.j_box_Elite])
+                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid,",",individuals.isElite,",",individuals.EliteMapPos,",",individuals.i_box_Elite,",",individuals.j_box_Elite,",","VMAX",",",individuals.vmax])
         
     # calculate if its individual 
     
@@ -202,9 +202,13 @@ def generate_new_gen(remain_ind):
     ### Above has generated 10 Pairs of Parents, they will may repeat but Superior fitness gives a better opportunity to repopulate. 
     for  i in range (0, ((remain_ind.numberinds)/2)):
         # generate the new individuals 
-        generate_new_children(remain_ind,individuals_to_reproduce[0], individuals_to_reproduce[1])
-        individuals_to_reproduce.pop(0)
-        individuals_to_reproduce.pop(0)
+        print i
+        try:
+            generate_new_children(remain_ind,individuals_to_reproduce[0], individuals_to_reproduce[1])
+            individuals_to_reproduce.pop(0)
+            individuals_to_reproduce.pop(0)
+        except:
+            print "maybe no more to pop"
     
     #Mutate the Children randomly 
     mutate(remain_ind)
@@ -239,6 +243,8 @@ def mutate(remain_ind):
                 individuals.ypos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
                 value = individuals.zpos[gene_to_mutate] 
                 individuals.zpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
+                
+
         print "Finished Mutating"
         individuals.printIndnum()
     # Make sure that mutations dont cause issues and check all valid waypoints
@@ -358,6 +364,7 @@ def generate_new_children(remain_ind,parent_1, parent_2):
     crossover_point = 0 # this will be set later
     equal = False # are the two individuals equal length 
     #short_parent = 0 
+    print "made it here"
     if parent_1.num_points < parent_2.num_points:
         crossover_point = parent_1.num_points
         #print "Case 1"
@@ -458,11 +465,12 @@ def generate_new_children(remain_ind,parent_1, parent_2):
             child_1z.append(val)
         for val in short_parent.vmax[crossover_point:None]: 
             child_1v.append(val)    
+    print "adding child 1"
     remain_ind.indcount = remain_ind.indcount + 1
     add = Individual(remain_ind.indcount,child_1num,child_1x,child_1y,child_1z,child_1v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
     remain_ind.indinstanceshistory.append(add)
-
+    print "adding child 2 "
     remain_ind.indcount = remain_ind.indcount + 1
     add = Individual(remain_ind.indcount,child_2num,child_2x,child_2y,child_2z,child_2v,remain_ind.gencount)
     remain_ind.current_ind_instances.append(add)
