@@ -12,7 +12,7 @@ class Individual:
         self.xpos = deepcopy(xpos)
         self.ypos = deepcopy(ypos)
         self.zpos = deepcopy(zpos)
-        self.vmax = deepcopy(vmax)
+        self.vmax = vmax
 
         self.alive = True
         self.sim_run = False
@@ -24,11 +24,13 @@ class Individual:
         self.execute_success = False
         self.parent_of_gen = 0 
         self.plan_1 = []
-        self.saved_to_gens
+        self.saved_to_gens = False
         self.mutated = False
         self.calc_euclid = False
         self.isElite = False
         self.EliteMapPos = 0
+        self.i_box_Elite = 0
+        self.j_box_Elite = 0
         print "Init Ind", indnum, "completed"
 
     def printIndnum(self):
@@ -56,11 +58,13 @@ class Individual:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             writer.writerow([self.gen,",",'Generation'])
             writer.writerow([self.indnum,",",'Individual Number'])
-            writer.writerow([self.num_points,",",'Number of points'])         
-            writer.writerow(self.xpos)
-            writer.writerow(self.ypos)
-            writer.writerow(self.zpos)
-            writer.writerow(self.vmax)            
+            writer.writerow([self.num_points,",",'Number of points'])    
+            for i in range (0 , (len(self.xpos))):
+                #error her
+                writer.writerow([self.xpos[i],",",self.ypos[i],",",self.zpos[i],",",self.vmax[i]])
+                #writer.writerow(self.ypos)
+                #writer.writerow(self.zpos)
+                #writer.writerow(self.vmax)            
 
     def returnnumpoints(self):
         return self.num_points

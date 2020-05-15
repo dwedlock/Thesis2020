@@ -53,7 +53,8 @@ def main():
     writer.publish(hello_str)
     filestring.publish(file_str)
     print "Generating a population"
-    pop = Population(8,False,0) #should be an even number 10-20 
+    #pop = Population(8,False,0) #should be an even number 10-20 
+    pop = Population(8,True,17) #should be an even number 10-20 
     if pop.gencount == 0:
       pop.gencount = pop.gencount + 1
     grav = GravityControl()

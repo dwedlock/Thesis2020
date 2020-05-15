@@ -73,6 +73,9 @@ def evaluate_pop(population): # recall the whole pop
     #### ENTRY POINT OF GA ###############
     ### note population is the entire population, all individuals ever created
     ## We sort them into generations with a gen number 
+    cal_acc_euclid(population)
+    #cal_vel_score(population)
+    
     worst_to_remove = ((population.numberinds)/2)
     #Generate the Eucideans from two csv files
     for individuals in population.current_ind_instances:
@@ -80,32 +83,47 @@ def evaluate_pop(population): # recall the whole pop
             if (individuals.calc_euclid == False):
                 # This is to ensure we never call twice or add more to a euclidean that is already calculated
                 calc_euclid(individuals)
+
                 print "Individual number",individuals.indnum," has a euclidean of ",individuals.euclid
                 individuals.calc_euclid == True
         if (individuals.sim_success == False) and (individuals.alive == False):
             individuals.euclid = 0 # ensure set to zero 
             print "Individual number",individuals.indnum," FAILED and has a euclidean of Zero ",individuals.euclid
-        file_ind = "Results/Population/totalgens.csv"
+    
+    file_ind = "Results/Population/totalgens.csv"
+    cal_ifElite(population)
+
+    for individuals in population.current_ind_instances:
         if individuals.saved_to_gens == False:
             with open(file_ind, 'a') as csvfile:
                 individuals.saved_to_gens = True
                 writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
                 #number_points,x_pos,y_pos,z_pos,v_max,gen
-                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.xpos,",",individuals.ypos,",",individuals.zpos,",",individuals.vmax,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.waypoints,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid,",",individuals.isElite,",",individuals.EliteMapPos])
+                writer.writerow([individuals.gen,",",'Generation',",",individuals.indnum,",","Euclid",",",individuals.euclid,",",individuals.num_points,",",individuals.gen,",",individuals.alive,",",individuals.sim_run,",",individuals.real_run,",",individuals.acc_euclid,",",individuals.sim_success,",",individuals.execute_success,",",individuals.parent_of_gen,",",individuals.saved_to_gens,",",individuals.mutated,",",individuals.calc_euclid,",",individuals.isElite,",",individuals.EliteMapPos,",",individuals.i_box_Elite,",",individuals.j_box_Elite])
         
-    # sorts best to worst Euclidean 
-    population.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
+    # calculate if its individual 
+    
+    
+    #population.current_ind_instances.sort(key=lambda x: x.euclid,reverse=False)
 
-    for i in range(0,worst_to_remove):# kill bottom half NOTE must be less than pop number of crash
-        print "popping an ind"
-        topop = population.current_ind_instances[i]
-        topop.alive = False # this way the historical population can still be sorted for alive True/False 
-        population.current_ind_instances.pop(0) # remove the individual from the current list 
-    print "New pop of X Elites with X Weaker removed "    
+    # for i in range(0,worst_to_remove):# kill bottom half NOTE must be less than pop number of crash
+    #     print "popping an ind"
+    #     topop = population.current_ind_instances[i]
+    #     topop.alive = False # this way the historical population can still be sorted for alive True/False 
+    #     population.current_ind_instances.pop(0) # remove the individual from the current list 
+    #print "New pop of X Elites with X Weaker removed "    
     #print_all_current(population)
+    for i in range (0,len(population.current_ind_instances)):
+        if population.current_ind_instances[i].isElite == False:
+            print "individual",population.current_ind_instances[i].indnum
+            population.current_ind_instances.pop(i)
+
+
     for individuals in population.current_ind_instances:
+
         print "Surviving individual", individuals.indnum, "Euclid", individuals.euclid
         individuals.parent_of_gen = (population.gencount) + 1
+        individuals.isElite = True
         file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individuals.indnum),(individuals.gen))
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
@@ -172,6 +190,7 @@ def generate_new_gen(remain_ind):
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             writer.writerow([individuals.gen,",",'Generation'])
             writer.writerow([individuals.num_points,",",'NumberPoints'])
+            writer.writerow([individuals.indnum,",",'Individual'])
             writer.writerow([individuals.vmax,",",'Vmax'])
             writer.writerow([individuals.xpos,",",'Xpos'])
             writer.writerow([individuals.ypos,",",'Ypos'])
@@ -191,7 +210,7 @@ def generate_new_gen(remain_ind):
     mutate(remain_ind)
     # Generate the WP for children
     remain_ind.gen_wp()
-    cal_acc_euclid(remain_ind)
+    
 
 
 
@@ -252,16 +271,86 @@ def check_valid_waypoints(remain_ind):
 def cal_acc_euclid(remain_ind):
     #for individuals in remain_ind:
     for individuals in remain_ind.current_ind_instances:    
-        if individuals.sim_run == False:
-            print "ind num in acc auclid", individuals.indnum
-            for i in range (0 , (len(individuals.xpos))):
-                x_check = individuals.xpos[i]
-                y_check = individuals.ypos[i]
-                z_check = individuals.zpos[i]
-                p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
-                p2 = (0.0,0.0,0.0)
-                point_euclid_add = distance.euclidean(p2,p1)  
-                individuals.acc_euclid = individuals.acc_euclid + point_euclid_add
+        #if individuals.sim_run == True:
+        print "ind num in acc auclid", individuals.indnum
+        for i in range (0 , (len(individuals.xpos))):
+            x_check = individuals.xpos[i]
+            y_check = individuals.ypos[i]
+            z_check = individuals.zpos[i]
+            p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
+            p2 = (0.0,0.0,0.0)
+            point_euclid_add = distance.euclidean(p2,p1)  
+            individuals.acc_euclid = individuals.acc_euclid + point_euclid_add
+
+# def cal_vel_score(remain_ind):
+#     #for individuals in remain_ind:
+#     for individuals in remain_ind.current_ind_instances:    
+#         if individuals.sim_run == False:
+#             print "ind num in acc auclid", individuals.indnum
+#             for i in range (0 , (len(individuals.xpos))):
+#                 ()
+                # x_check = individuals.xpos[i]
+                # y_check = individuals.ypos[i]
+                # z_check = individuals.zpos[i]
+                # p1 = (x_check,y_check,y_check)#(float(valsZ[i])))
+                # p2 = (0.0,0.0,0.0)
+                # point_euclid_add = distance.euclidean(p2,p1)  
+                # individuals.acc_euclid = individuals.acc_euclid + point_euclid_add
+
+
+def cal_ifElite(remain_ind):
+    # passes the whole population
+    for individuals in remain_ind.current_ind_instances:
+        # check all have i and j referrances
+        which_box(individuals)
+        indiv_to_check_against = []
+
+        for ind_to_check in remain_ind.indinstanceshistory:
+            if individuals.i_box_Elite == ind_to_check.i_box_Elite and individuals.j_box_Elite == ind_to_check.j_box_Elite:
+                # these are in the same bob
+                indiv_to_check_against.append(ind_to_check)
+        false_count = 0
+        for ind_to_check_against in indiv_to_check_against:
+            #check against the list we just made
+            if individuals.euclid > ind_to_check_against.euclid:
+                individuals.isElite = True
+                print "Individual was better than someone ", individuals.indnum
+            if individuals.euclid < ind_to_check_against.euclid:
+                false_count = false_count + 1
+        if false_count < 5:
+            # in the top 5 for all generations
+            print "Individual ", individuals.indnum, "is Elite"
+            individuals.isElite = True
+   
+  
+    
+
+def which_box(ind):
+
+    if ind.acc_euclid > 0.0 and  ind.acc_euclid <= 1.2:
+        ind.i_box_Elite = 0
+    if ind.acc_euclid > 1.2 and  ind.acc_euclid <= 2.4:
+        ind.i_box_Elite = 1
+    if ind.acc_euclid > 2.4 and  ind.acc_euclid <= 3.6:
+        ind.i_box_Elite = 2
+    if ind.acc_euclid > 3.6 and  ind.acc_euclid <= 4.8:
+        ind.i_box_Elite = 3
+    if ind.acc_euclid > 4.8:
+        ind.i_box_Elite = 4
+
+    if (ind.vmax > 0.0 and ind.vmax <= 0.1):
+        ind.j_box_Elite = 0
+    if (ind.vmax > 0.1 and ind.vmax <= 0.2):
+        ind.j_box_Elite = 1
+    if (ind.vmax > 0.2 and ind.vmax <= 0.3):
+        ind.j_box_Elite = 2
+    if (ind.vmax > 0.3 and ind.vmax <= 0.4):
+        ind.j_box_Elite = 3
+    if (ind.vmax > 0.4):
+        ind.j_box_Elite = 4
+
+
+
 
 
 def generate_new_children(remain_ind,parent_1, parent_2):
