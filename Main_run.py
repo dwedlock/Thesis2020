@@ -53,8 +53,9 @@ def main():
     writer.publish(hello_str)
     filestring.publish(file_str)
     print "Generating a population"
-    #pop = Population(8,False,0) #should be an even number 10-20 
-    pop = Population(8,True,17) #should be an even number 10-20 
+    #pop = Population(20,False,0) #should be an even number 10-20 
+    pop = Population(20,True,158) #should be an even number 10-20 
+    #
     if pop.gencount == 0:
       pop.gencount = pop.gencount + 1
     grav = GravityControl()
@@ -69,7 +70,7 @@ def main():
     if pop.res_sim == True:
       print "We have had a restart, attempting to load individuals"
       pop.load_inds()
-
+    pop.gencount = 8
     check_valid_waypoints(pop.current_ind_instances)
     print "Success adding table "
     time.sleep(1)
@@ -96,10 +97,12 @@ def run_simulation(tutorial,pop,loops,filestring,writer,velocity):
     file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (pop.gencount))
     file_str_real = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (pop.gencount))
     print "New Path entered and Model Posmoving to home"
-    tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
-    time.sleep(10)
+    
+    #time.sleep(5)
     print "Should be at home position, all joints Zero, ready for Individual", individuals.indnum,"Gen",individuals.gen
     if individuals.sim_run == False: # this line ensures we only do the new ones
+      #tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
+      #time.sleep(10)
       file_str = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (pop.gencount))
       file_str_real = "Results/Sim/ind%sgen%s.csv" % ((individuals.indnum), (pop.gencount))
       filestring.publish(file_str)
@@ -109,15 +112,16 @@ def run_simulation(tutorial,pop,loops,filestring,writer,velocity):
     #cartesian_plan, fraction = tutorial.plan_cartesian_path(pathlist,individuals,writer)
     test = True
     ##Generate Plans for Each Waypoints
-    tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
+    
     
     # Below starts the planner for each individual in the population
     # This is a slow process and requires greater computational time. 
     # There is a pause between waypoints however the successful plans are saved for execution later. 
-    time.sleep(10)
+    #time.sleep(5)
     if individuals.sim_run == False:
+      tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
       print "Starting Planner"
-      
+      time.sleep(10)
       for i in range(0,(len(individuals.xpos))):
         #individuals.sim_success = True
         if test == True:
@@ -171,7 +175,7 @@ def run_real(tutorial,pop,loops,filestring,writer,velocity):
     file_str = "Results/Real/ind%sgen%s.csv" % ((individuals.indnum), (pop.gencount))
     
     print "Run REAL Should be at home position, all joints Zero, ready for Individual", individuals.indnum,"Gen",individuals.gen
-    tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
+    
     
     print "REAL Should be at home position, all joints Zero, ready for Individual", individuals.indnum
     if individuals.real_run == False: # this line ensures we only do the new ones
@@ -186,6 +190,7 @@ def run_real(tutorial,pop,loops,filestring,writer,velocity):
     writer.publish(inst_str) # Starts the Listener
     time.sleep(1) # ensure we got a start
     if individuals.sim_success == True and individuals.execute_success == False:
+      tutorial.go_to_joint_state(0.0,0.0,0.0,0.0,0.0,0.0) # note Rads each joint 
       time.sleep(10)
       inst_str = "start"
       writer.publish(inst_str)

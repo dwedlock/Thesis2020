@@ -19,7 +19,7 @@ class Population:
         #self.numbpoints = random.randint(1,10)
         #self.pop_size
         print "Init Population worked"
-        self.numpoints = [2,4]
+        self.numpoints = [2,10]
         self.xmin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]
         self.xmax = [0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9,0.9]
         self.ymin = [-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9,-0.9]#[-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5,-0.5]

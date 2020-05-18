@@ -25,48 +25,53 @@ def calc_euclid(individual):
     other_file_str = "Results/Real/ind%sgen%s.csv" % ((individual.indnum), (individual.gen))
     print "Opening file to evaluate",file_str
 
+    try:
+        with open(file_str,'rb') as textfile1, open(other_file_str,'rb') as textfile2: 
+            csvreader1=csv.reader(textfile1,delimiter=',') # Careful to check csv type file 
+            csvreader2=csv.reader(textfile2,delimiter=',')
+            print "list Method"
+            # Simulation data 
+            xyz = list(izip(*csvreader1))
+            valsX = xyz[0] # sim x
+            valsY = xyz[1] # sim Y 
+            valsZ = xyz[2] # sim z 
+            #Will be real data currently zeros
+            realxyz = list(izip(*csvreader2))
+            compX = realxyz[0] # real x
+            compY = realxyz[1] # real y
+            compZ = realxyz[2] # real z 
+            lenR = len(valsX)
+            lenS = len(compX)
+            shorter = 0
+            if lenR > lenS:
+                shorter = lenS
+            else:
+                shorter = lenR
+            for i in range(0,shorter):
+                xS = float(valsX[i])
+                yS = float(valsY[i])
+                zS = float(valsZ[i])
+                xR = float(compX[i])
+                yR = float(compY[i])
+                zR = float(compZ[i])
 
-    with open(file_str,'rb') as textfile1, open(other_file_str,'rb') as textfile2: 
-        csvreader1=csv.reader(textfile1,delimiter=',') # Careful to check csv type file 
-        csvreader2=csv.reader(textfile2,delimiter=',')
-        print "list Method"
-        # Simulation data 
-        xyz = list(izip(*csvreader1))
-        valsX = xyz[0] # sim x
-        valsY = xyz[1] # sim Y 
-        valsZ = xyz[2] # sim z 
-        #Will be real data currently zeros
-        realxyz = list(izip(*csvreader2))
-        compX = realxyz[0] # real x
-        compY = realxyz[1] # real y
-        compZ = realxyz[2] # real z 
-        lenR = len(valsX)
-        lenS = len(compX)
-        shorter = 0
-        if lenR > lenS:
-            shorter = lenS
-        else:
-            shorter = lenR
-        for i in range(0,shorter):
-            xS = float(valsX[i])
-            yS = float(valsY[i])
-            zS = float(valsZ[i])
-            xR = float(compX[i])
-            yR = float(compY[i])
-            zR = float(compZ[i])
-
-            p1 = (xS,yS,zS)#(float(valsZ[i])))
-            p2 = (xR,yR,zR)
-            #print p2
-            individual.euclid = individual.euclid + distance.euclidean(p1,p2)
-        print "Euclidean Composite from 0,0,0 to every point at 10hz recording frequency", individual.euclid
-        
-        file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individual.indnum),(individual.gen))
-        with open(file_ind, 'a') as csvfile:
-            writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-            writer.writerow([individual.euclid,",",'Euclidean'])
-            writer.writerow([individual.sim_success,",",'Sim Sucess'])
-            writer.writerow([individual.real_success,",",'Real Sucess'])
+                p1 = (xS,yS,zS)#(float(valsZ[i])))
+                p2 = (xR,yR,zR)
+                #print p2
+                individual.euclid = individual.euclid + distance.euclidean(p1,p2)
+            print "Euclidean Composite from 0,0,0 to every point at 10hz recording frequency", individual.euclid
+            
+            file_ind = "Results/Individuals/ind%sgen%s.csv" % ((individual.indnum),(individual.gen))
+            try:
+                with open(file_ind, 'a') as csvfile:
+                    writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+                    writer.writerow([individual.euclid,",",'Euclidean'])
+                    writer.writerow([individual.sim_success,",",'Sim Sucess'])
+                    writer.writerow([individual.real_success,",",'Real Sucess'])
+            except:
+                print "May be a bad file in cal euclid"
+    except:
+        print "Might be a bad file loc in cal euclid"
 
 
 def evaluate_pop(population): # recall the whole pop
@@ -114,9 +119,12 @@ def evaluate_pop(population): # recall the whole pop
     #print "New pop of X Elites with X Weaker removed "    
     #print_all_current(population)
     for i in range (0,len(population.current_ind_instances)):
-        if population.current_ind_instances[i].isElite == False:
-            print "individual",population.current_ind_instances[i].indnum
-            population.current_ind_instances.pop(i)
+        try:
+            if population.current_ind_instances[i].isElite == False:
+                print "individual",population.current_ind_instances[i].indnum
+                population.current_ind_instances.pop(i)
+        except:
+            print "Might be at end and missed a pop of current"
 
 
     for individuals in population.current_ind_instances:
@@ -233,17 +241,18 @@ def mutate(remain_ind):
             #waypoints_to_mutate = []
             if number_genes_to_mutate > max_wp_length:
                 number_genes_to_mutate = max_wp_length
-
-            for i in range(0,number_genes_to_mutate):
-                gene_to_mutate = random.randint(0,max_wp_length-1)
-                sigma = 0.1
-                value = individuals.xpos[gene_to_mutate] 
-                individuals.xpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
-                value = individuals.ypos[gene_to_mutate] 
-                individuals.ypos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
-                value = individuals.zpos[gene_to_mutate] 
-                individuals.zpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
-                
+            try:
+                for i in range(0,number_genes_to_mutate):
+                    gene_to_mutate = random.randint(0,max_wp_length-1)
+                    sigma = 0.1
+                    value = individuals.xpos[gene_to_mutate] 
+                    individuals.xpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
+                    value = individuals.ypos[gene_to_mutate] 
+                    individuals.ypos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
+                    value = individuals.zpos[gene_to_mutate] 
+                    individuals.zpos[gene_to_mutate] = random.gauss(value,sigma)#(value * 20.0)
+            except:
+                print "Might have a bad gene lenght in mutate"    
 
         print "Finished Mutating"
         individuals.printIndnum()
@@ -333,15 +342,15 @@ def cal_ifElite(remain_ind):
 
 def which_box(ind):
 
-    if ind.acc_euclid > 0.0 and  ind.acc_euclid <= 1.2:
+    if ind.acc_euclid > 0.0 and  ind.acc_euclid <= 3.2:
         ind.i_box_Elite = 0
-    if ind.acc_euclid > 1.2 and  ind.acc_euclid <= 2.4:
+    if ind.acc_euclid > 3.2 and  ind.acc_euclid <= 6.4:
         ind.i_box_Elite = 1
-    if ind.acc_euclid > 2.4 and  ind.acc_euclid <= 3.6:
+    if ind.acc_euclid > 6.4 and  ind.acc_euclid <= 9.6:
         ind.i_box_Elite = 2
-    if ind.acc_euclid > 3.6 and  ind.acc_euclid <= 4.8:
+    if ind.acc_euclid > 9.6 and  ind.acc_euclid <= 12.8:
         ind.i_box_Elite = 3
-    if ind.acc_euclid > 4.8:
+    if ind.acc_euclid > 12.8:
         ind.i_box_Elite = 4
 
     if (ind.vmax > 0.0 and ind.vmax <= 0.1):

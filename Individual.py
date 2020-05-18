@@ -45,26 +45,33 @@ class Individual:
     def generate_wp(self):
         loop = 0
         #print "num points ",self.num_points
+       
         for i in range(0,self.num_points):
-            #print "Loop",loop
-            loop = loop + 1
-            self.waypoints.append(self.xpos[i])
-            self.waypoints.append(self.ypos[i])
-            self.waypoints.append(self.zpos[i])
-            self.waypoints.append(self.vmax[i])
-        
+            try:
+                #print "Loop",loop
+                loop = loop + 1
+                self.waypoints.append(self.xpos[i])
+                self.waypoints.append(self.ypos[i])
+                self.waypoints.append(self.zpos[i])
+                self.waypoints.append(self.vmax[i])
+            except:
+                print "might have a bad wp"
         file_ind = "Results/Individuals/ind%sgen%s.csv" % ((self.indnum),(self.gen))
         with open(file_ind, 'a') as csvfile:
             writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
             writer.writerow([self.gen,",",'Generation'])
             writer.writerow([self.indnum,",",'Individual Number'])
-            writer.writerow([self.num_points,",",'Number of points'])    
+            writer.writerow([self.num_points,",",'Number of points'])  
+
             for i in range (0 , (len(self.xpos))):
                 #error her
-                writer.writerow([self.xpos[i],",",self.ypos[i],",",self.zpos[i],",",self.vmax[i]])
+                try:
+                    writer.writerow([self.xpos[i],",",self.ypos[i],",",self.zpos[i],",",self.vmax[i]])
                 #writer.writerow(self.ypos)
                 #writer.writerow(self.zpos)
-                #writer.writerow(self.vmax)            
+                #writer.writerow(self.vmax)   
+                except:
+                    print "Might have a bad WP"         
 
     def returnnumpoints(self):
         return self.num_points

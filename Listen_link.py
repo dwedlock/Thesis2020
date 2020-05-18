@@ -62,10 +62,12 @@ def main():
         print "recording",recording,"we moved", we_moved
         if recording == True and we_moved == True:
             print "We moved and are recording ",recording,"file ",file_to_write
-            
-            with open(file_to_write, 'a') as csvfile:
-                writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
-                writer.writerow([x,",",y,",",z])
+            try:
+                with open(file_to_write, 'a') as csvfile:
+                    writer = csv.writer(csvfile,delimiter= ' ',quotechar ='|',quoting = csv.QUOTE_MINIMAL)
+                    writer.writerow([x,",",y,",",z])
+            except:
+                print "We may have a bad file ",file_to_write
         last_check_move = this_check_move
 
 if __name__ == '__main__':
