@@ -93,3 +93,18 @@ True , |Sim Sucess|
 False , |Real Sucess|
 10 , |Parent of Generation|
 8.587455319731518 , |Acc Euclidean Generation|
+True , |Sim Sucess|
+False , |Real Sucess|
+9 , |Parent of Generation|
+5.70032957816996 , |Acc Euclidean Generation|
+1 , Generation
+16 , |Individual Number|
+4 , |Number of points|
+0.013304069485487569 , 0.2269789683598377 , 1.3195069311792385 , 0.11341381288711598
+0.3965005750909476 , 0.855503080748826 , 1.1886469128676145 , 0.11341381288711598
+0.608021053786176 , 0.3632568002860149 , 0.6104161218294318 , 0.11341381288711598
+-0.3036969523008062 , -0.35444774865015594 , 0.6342704636372063 , 0.11341381288711598
+True , |Sim Sucess|
+False , |Real Sucess|
+10 , |Parent of Generation|
+8.676858067272851 , |Acc Euclidean Generation|

@@ -1,0 +1,53 @@
+16 , Generation
+476 , |Individual Number|
+2 , |Number of points|
+-0.48083002650926965 , 0.4732718607291901 , 0.2905293325041918 , 0.1275862412568783
+0.6253256501115302 , 0.20783022495236542 , 0.6480535937103873 , 0.1275862412568783
+101.37438639038244 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+17 , |Parent of Generation|
+1.515072840662287 , |Acc Euclidean Generation|
+16 , Generation
+476 , |Individual Number|
+2 , |Number of points|
+-0.53870485855703 , 0.48480819581102663 , 0.253416410249739 , 0.1275862412568783
+0.6253256501115302 , 0.20783022495236542 , 0.6480535937103873 , 0.1275862412568783
+202.74877278076474 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+18 , |Parent of Generation|
+3.0779688374325374 , |Acc Euclidean Generation|
+16 , Generation
+476 , |Individual Number|
+2 , |Number of points|
+-0.36040350081755185 , 0.562022105201315 , 0.2506596116209928 , 0.1275862412568783
+0.5568888043716476 , 0.08325919065960788 , 0.7052850805896439 , 0.1275862412568783
+304.1231591711472 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+19 , |Parent of Generation|
+4.519882667280623 , |Acc Euclidean Generation|
+16 , Generation
+476 , |Individual Number|
+2 , |Number of points|
+-0.36040350081755185 , 0.562022105201315 , 0.2506596116209928 , 0.1275862412568783
+0.5568888043716476 , 0.08325919065960788 , 0.7052850805896439 , 0.1275862412568783
+405.4975455615296 , Euclidean
+True , |Sim Sucess|
+True , |Real Sucess|
+True , |Sim Sucess|
+True , |Real Sucess|
+20 , |Parent of Generation|
+5.961796497128708 , |Acc Euclidean Generation|
+16 , Generation
+476 , |Individual Number|
+2 , |Number of points|
+-0.24313541029097147 , 0.546992362232758 , 0.18082113883595224 , 0.1275862412568783
+0.5424948355083161 , 0.14367431654210996 , 0.9559201167004201 , 0.1275862412568783
