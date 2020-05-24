@@ -176,7 +176,7 @@ class Population:
         #print self.number
     
     def gen_wp(self):
-        for individuals in Population.current_ind_instances:
+        for individuals in self.current_ind_instances:
             individuals.generate_wp()
 
 

@@ -1,0 +1,120 @@
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.289673775210999,0.265141524288836,0.588801197094524,0.178867065522506
+-0.204770449453405,0.4619889880135,1.67218499203527,0.178867065522506
+-0.563730283064752,0.250080810170301,0.363245602367122,0.178867065522506
+-0.204770449453405,0.4619889880135,1.67218499203527,0.178867065522506
+-0.8970801628756,0.331358919274651,0.245418152875894,0.178867065522506
+-0.183782855568287,0.839662151236449,1.96373595971163,0.178867065522506
+,,,
+,,,
+,,,
+123.414648909094, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+12, |Parent of Generation|,,
+1.15851454552394, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.563730283064752,0.250080810170301,0.363245602367122,0.178867065522506
+-0.204770449453405,0.4619889880135,1.67218499203527,0.178867065522506
+246.829297818187, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+13, |Parent of Generation|,,
+2.50869000514976, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.563730283064752,0.250080810170301,0.363245602367122,0.178867065522506
+-0.134891002046997,0.393602516106124,1.94011377324262,0.178867065522506
+370.243946727281, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+14, |Parent of Generation|,,
+3.74692582669893, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.751303387705117,0.275253464049347,0.249848554754809,0.178867065522506
+-0.22080043887772,0.507800471615488,1.93066222224297,0.178867065522506
+493.658595636375, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+15, |Parent of Generation|,,
+5.34440104716731, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.751303387705117,0.275253464049347,0.249848554754809,0.178867065522506
+-0.22080043887772,0.507800471615488,1.93066222224297,0.178867065522506
+617.073244545468, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+16, |Parent of Generation|,,
+6.94187626763569, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.770783988020386,0.223873827240956,0.252533841646948,0.178867065522506
+-0.213340977602153,0.777404492728668,2.02409348270447,0.178867065522506
+740.487893454562, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+17, |Parent of Generation|,,
+8.89507513815436, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.770783988020386,0.223873827240956,0.252533841646948,0.178867065522506
+-0.213340977602153,0.777404492728668,2.02409348270447,0.178867065522506
+863.902542363656, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+18, |Parent of Generation|,,
+10.848274008673, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.770783988020386,0.223873827240956,0.252533841646948,0.178867065522506
+-0.213340977602153,0.777404492728668,2.02409348270447,0.178867065522506
+987.317191272749, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+19, |Parent of Generation|,,
+12.8014728791917, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.770783988020386,0.223873827240956,0.252533841646948,0.178867065522506
+-0.213340977602153,0.777404492728668,2.02409348270447,0.178867065522506
+1110.73184018184, Euclidean,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+True , |Sim Sucess|,,
+True , |Real Sucess|,,
+20, |Parent of Generation|,,
+14.7546717497104, |Acc Euclidean Generation|,,
+11, Generation,,
+358, |Individual Number|,,
+2, |Number of points|,,
+-0.8970801628756,0.331358919274651,0.245418152875894,0.178867065522506
+-0.183782855568287,0.839662151236449,1.96373595971163,0.178867065522506

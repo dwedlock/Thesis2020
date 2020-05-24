@@ -65,13 +65,13 @@ class Individual:
 
             for i in range (0 , (len(self.xpos))):
                 #error her
-                try:
-                    writer.writerow([self.xpos[i],",",self.ypos[i],",",self.zpos[i],",",self.vmax[i]])
+                #try:
+                writer.writerow([self.xpos[i],",",self.ypos[i],",",self.zpos[i],",",self.vmax])
                 #writer.writerow(self.ypos)
                 #writer.writerow(self.zpos)
                 #writer.writerow(self.vmax)   
-                except:
-                    print "Might have a bad WP"         
+                 #except:
+                #    print "Might have a bad WP"         
 
     def returnnumpoints(self):
         return self.num_points

@@ -47,6 +47,7 @@ def calc_euclid(individual):
                 shorter = lenS
             else:
                 shorter = lenR
+            individual.euclid = 0 # incase we call this twice between gens dont keep adding
             for i in range(0,shorter):
                 xS = float(valsX[i])
                 yS = float(valsY[i])
@@ -336,6 +337,19 @@ def cal_ifElite(remain_ind):
             # in the top 5 for all generations
             print "Individual ", individuals.indnum, "is Elite"
             individuals.isElite = True
+    remain_ind.current_ind_instances = []        
+    for individuals in remain_ind.indinstanceshistory:
+        if individuals.euclid == 0:
+            individuals.isElite = False
+        if individuals.isElite == True:
+            remain_ind.current_ind_instances.append(individuals)
+            print "We added",individuals.indnum
+
+    for individuals in remain_ind.current_ind_instances:
+        print "These are the remaining inds", individuals.indnum
+
+
+
    
   
     

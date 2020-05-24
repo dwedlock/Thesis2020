@@ -54,7 +54,7 @@ def main():
     filestring.publish(file_str)
     print "Generating a population"
     #pop = Population(20,False,0) #should be an even number 10-20 
-    pop = Population(20,True,158) #should be an even number 10-20 
+    pop = Population(20,True,941) #should be an even number 10-20 
     #
     if pop.gencount == 0:
       pop.gencount = pop.gencount + 1
@@ -70,7 +70,8 @@ def main():
     if pop.res_sim == True:
       print "We have had a restart, attempting to load individuals"
       pop.load_inds()
-    pop.gencount = 8
+      pop.gen_wp()
+    pop.gencount = 56
     check_valid_waypoints(pop.current_ind_instances)
     print "Success adding table "
     time.sleep(1)
